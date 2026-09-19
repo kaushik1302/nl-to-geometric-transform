@@ -1,0 +1,11 @@
+{
+  "git.ignoreLimitWarning": true,
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests"],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.terminal.activateEnvironment": true,
+  "files.exclude": { "**/__pycache__": true },
+  "files.watcherExclude": { "**/.venv/**": true },
+  "search.exclude": { "**/.venv/**": true }
+}

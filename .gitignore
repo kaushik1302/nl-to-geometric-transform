@@ -1,0 +1,9 @@
+﻿.venv/
+__pycache__/
+*.pyc
+data/
+outputs/*
+!outputs/.gitkeep
+*.npy
+.ipynb_checkpoints/
+.DS_Store
