@@ -1,10 +1,11 @@
 ﻿.venv/
 __pycache__/
 *.pyc
-data/
-outputs/*
-!outputs/.gitkeep
+/data/
+/outputs/*
+!/outputs/.gitkeep
 *.npy
 .ipynb_checkpoints/
 .DS_Store
 *.egg-info/
+/refs/
