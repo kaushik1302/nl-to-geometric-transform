@@ -27,3 +27,21 @@
 
 **Next**
 - Measure GeoBench's ranges per adverb, then set the level ranges in distributions.py
+
+
+## 2026-10-04 · GeoBench measured
+**Done**
+- tools/geobench_stats.py: measured all 5,677 GeoBench 2D rows
+
+**Findings**
+- Parameter format confirmed as [tx, ty, tz, rx, ry, rz, sx, sy, sz]: 0 rows violate it
+- Rotation sign confirmed opposite to ours: all 785 counterclockwise rows have rz < 0, so θ = −rz
+- Single edits only: 2,635 scale, 1,603 rotate, 1,439 translate, no combined edits
+- Exactly 3 magnitude levels, identical across edit types:
+  small (gently, mildly, lightly, slightly), medium (appreciably, markedly, moderately),
+  large (heavily, strongly, significantly, intensely)
+- Ranges per level — translate (fraction of width): 0.05–0.13 / 0.10–0.27 / 0.20–0.47;
+  rotate: 5–9° / 10–19° / 20–39°; |log s|: 0.10–0.26 / 0.23–0.51 / 0.41–1.06
+- Translation and scale ranges overlap between levels because GeoBench scales shifts to object size;
+  rotation levels do not overlap
+- Our original planned ranges were well off (e.g. "significantly" rotation planned 40–70°, real 20–39°)
