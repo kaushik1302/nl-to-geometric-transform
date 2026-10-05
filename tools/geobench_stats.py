@@ -8,7 +8,7 @@ ds = ds.select_columns(["edit_prompt", "edit_param"])   # skip the images: much 
 rows = []
 format_problems = 0
 for ex in ds:
-    tx, ty, tz, rx, ry, rz, sx, sy, sz = ex["edit_param"]  # type: ignore
+    tx, ty, tz, rx, ry, rz, sx, sy, sz = ex["edit_param"]   # type: ignore
     prompt = ex["edit_prompt"].lower().strip(" .")          # type: ignore
 
     # 1. Format check: entries we don't use must hold their "do nothing" values
