@@ -18,7 +18,7 @@ def sample_size(kind, level, rng):
 
     kind  : "translate", "rotate" or "scale"
     level : "small", "medium" or "large"
-    rng   : a numpy random generator, created once with a fixed seed
+    rng   : a random generator (random.Random), created once with a fixed seed
     """
     low, high = RANGES[kind][level]
     return rng.uniform(low, high)

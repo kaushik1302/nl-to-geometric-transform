@@ -10,9 +10,9 @@ of wording the model has never seen.
 OBJECTS = ["the shape", "the object", "the square", "the circle", "the box", "it"]
 
 # Verbs, grouped by the transform they imply
-TRANSLATE_VERBS = ["move", "shift", "nudge", "push", "slide"]
+TRANSLATE_VERBS = ["move", "shift", "nudge", "push"]
 ROTATE_VERBS = ["rotate", "turn", "spin"]
-SCALE_UP_VERBS = ["enlarge", "grow", "expand"]
+SCALE_UP_VERBS = ["enlarge", "grow"]
 SCALE_DOWN_VERBS = ["shrink", "reduce"]
 
 # Translation direction -> unit vector (dx, dy) in image coordinates (y points DOWN)
@@ -28,11 +28,12 @@ TRANSLATE_DIRECTIONS = {
     "toward the bottom-right": (D, D),
 }
 
-# Rotation direction -> sign of θ (positive = counter-clockwise on screen)
+# Rotation sign -> phrases for it (positive = counter-clockwise on screen).
+# Grouped by sign so the generator can pick each direction 50/50,
+# regardless of how many phrases each has.
 ROTATE_DIRECTIONS = {
-    "clockwise": -1,
-    "counter-clockwise": 1,
-    "anticlockwise": 1,
+    -1: ["clockwise"],
+    1:  ["counter-clockwise", "anticlockwise"],
 }
 
 # Vague magnitude words, grouped by level. Three levels, matching GeoBench;
@@ -47,6 +48,12 @@ ADVERBS = {
 HELD_OUT_ADVERBS = {
     "a touch": "small",
     "considerably": "large",
+}
+
+# Never used in training: only in the held-out-verb test split
+HELD_OUT_VERBS = {
+    "slide": "translate",
+    "expand": "scale_up",
 }
 
 # Sentence patterns; the generator fills {verb} {obj} {adv} {dir}.
