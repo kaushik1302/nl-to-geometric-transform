@@ -35,13 +35,12 @@ ROTATE_DIRECTIONS = {
     "anticlockwise": 1,
 }
 
-# Vague magnitude words, grouped by level. Each level gets a number range
-# in distributions.py, calibrated against GeoBench.
+# Vague magnitude words, grouped by level. Three levels, matching GeoBench;
+# each level's number range is in distributions.py.
 ADVERBS = {
     "small": ["slightly", "a little", "a bit"],
     "medium": ["moderately", "somewhat"],
-    "large": ["significantly", "a lot"],
-    "huge": ["drastically", "massively"],
+    "large": ["significantly", "a lot", "drastically"],
 }
 
 # Never used in training: only in the held-out-adverb test split (RQ2)

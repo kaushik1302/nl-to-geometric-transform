@@ -29,7 +29,7 @@
 - Measure GeoBench's ranges per adverb, then set the level ranges in distributions.py
 
 
-## 2026-10-04 · GeoBench measured
+## 2026-10-05 · GeoBench measured
 **Done**
 - tools/geobench_stats.py: measured all 5,677 GeoBench 2D rows
 
@@ -45,3 +45,9 @@
 - Translation and scale ranges overlap between levels because GeoBench scales shifts to object size;
   rotation levels do not overlap
 - Our original planned ranges were well off (e.g. "significantly" rotation planned 40–70°, real 20–39°)
+
+
+## 2026-10-06 · Magnitude ranges
+- distributions.py: one range per edit type and level, set from GeoBench's measured min/max
+- Decision: 3 levels (small/medium/large) to match GeoBench; dropped our "huge" level, which had no real data to calibrate against; "drastically" moved to large, "massively" removed
+- Decision: uniform sampling within each range, from one seeded random generator passed in, so the dataset is reproducible
