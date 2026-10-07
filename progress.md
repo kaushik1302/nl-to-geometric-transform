@@ -1,4 +1,4 @@
-## 2026-09-20
+## 2026-09-20 · Environment
 - Env: Python 3.11.9, torch 2.14+cpu, CLIP (1,512), MiniLM (1,384). Smoke test OK.
 - Decision: CPU-only torch — no GPU needed for prep-stage experiments.
 - Decision: dataset generated not collected → data/ gitignored, seed + generator are the artifact.
@@ -51,3 +51,12 @@
 - distributions.py: one range per edit type and level, set from GeoBench's measured min/max
 - Decision: 3 levels (small/medium/large) to match GeoBench; dropped our "huge" level, which had no real data to calibrate against; "drastically" moved to large, "massively" removed
 - Decision: uniform sampling within each range, from one seeded random generator passed in, so the dataset is reproducible
+
+## 2026-10-06 · Generator v1
+- generate.py: single-transform examples (translate / rotate / scale in equal shares), vague magnitude words only
+- First run: 5,000 examples, seed 42, into data/dataset_v1.jsonl (regenerated from code; not in git)
+- Decision: held out the verbs "slide" and "expand", alongside the held-out adverbs, to test unseen verbs
+- Decision: negation dropped from scope; combined edits and explicit numbers come next
+- Decision: start with 5,000 examples so the output can be checked by eye; scale up once correct
+- Decision: Python's built-in random instead of numpy's — no type conversions needed for JSON
+- Fix: rotation direction now chosen 50/50 before choosing a phrase; picking uniformly among phrases made 2/3 of rotations counter-clockwise, because two of the three phrases mean counter-clockwise
