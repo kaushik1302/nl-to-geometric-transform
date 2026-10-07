@@ -77,3 +77,14 @@ TEMPLATES = {
         "can you {verb} {obj} {adv}",
     ],
 }
+
+# Plain clause patterns for combined instructions ("... and ...").
+# No "could you" prefix: it would sound wrong in the middle of a sentence.
+CLAUSE_TEMPLATES = {
+    "translate": ["{verb} {obj} {adv} {dir}", "{verb} {obj} {dir} {adv}"],
+    "rotate": ["{verb} {obj} {adv} {dir}", "{verb} {obj} {dir} {adv}"],
+    "scale": ["{verb} {obj} {adv}"],
+}
+
+# Words that join clauses in combined instructions
+JOINERS = [" and ", ", then "]

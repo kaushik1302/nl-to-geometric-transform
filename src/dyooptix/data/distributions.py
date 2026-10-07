@@ -12,6 +12,15 @@ RANGES = {
     "scale":     {"small": (0.10, 0.26), "medium": (0.23, 0.51), "large": (0.41, 1.06)},
 }
 
+# Ranges for explicit numbers ("by 30 degrees"), spanning all three levels.
+# translate: whole pixels on a 512-px reference width; rotate: whole degrees;
+# scale: a factor, used for both enlarging and shrinking.
+EXPLICIT_RANGES = {
+    "translate": (26, 240),
+    "rotate": (5, 39),
+    "scale": (1.1, 2.9),
+}
+
 
 def sample_size(kind, level, rng):
     """Draw one size for this edit type and level, uniformly from its range.
