@@ -21,7 +21,7 @@ y = [t_x, t_y, cos θ, sin θ, log s]
 
 ## Composition
 M = T(t) · T(c) · R(θ) · S(s) · T(−c), applied right to left.
-c = object centroid = mean (x, y) of the mask's pixels.
+c = image centre = (W/2, H/2): edits apply to the whole image.
 
 2×3 form for cv2.warpAffine, with α = s·cos θ, β = s·sin θ, t in pixels:
   [ α    β    t_x + (1−α)·c_x − β·c_y ]

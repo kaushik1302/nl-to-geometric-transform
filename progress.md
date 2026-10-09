@@ -60,3 +60,12 @@
 - Decision: start with 5,000 examples so the output can be checked by eye; scale up once correct
 - Decision: Python's built-in random instead of numpy's — no type conversions needed for JSON
 - Fix: rotation direction now chosen 50/50 before choosing a phrase; picking uniformly among phrases made 2/3 of rotations counter-clockwise, because two of the three phrases mean counter-clockwise
+
+
+## 2026-10-09 · Whole-image edits
+- Decision: edits apply to the whole image, with rotation and scale about the image centre (W/2, H/2), not to a masked object — simpler: one warp, no cut-out, compositing or hole-filling
+- build_affine unchanged (the centre is an input); spec and docstring updated
+- Consequence: GeoBench's target masks are object-level, so they can't be ground truth for rotation/scale here; GeoBench stays as the external instruction → parameter test and as a source of sample images and masks
+- Mask IoU becomes transform-consistency IoU: warp the same mask with the predicted and the true matrix and compare
+- Added "the image" and "the picture" to the object words
+- Object-level editing kept as a possible later extension

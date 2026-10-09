@@ -5,7 +5,8 @@ def build_affine(params: dict, centroid: tuple, width: int):
     """Build the 2x3 affine matrix for cv2.warpAffine.
 
     params   : {"tx", "ty", "cos", "sin", "log_s"}  (tx, ty as fractions of width)
-    centroid : (cx, cy) in pixels
+        centroid : (cx, cy), the point rotation and scale act about, in pixels;
+               the image centre (W/2, H/2) for whole-image edits
     width    : image width W in pixels
     returns  : float array of shape (2, 3)
     """

@@ -7,7 +7,7 @@ of wording the model has never seen.
 """
 
 # What the instruction refers to (generic nouns, since we use a synthetic canvas)
-OBJECTS = ["the shape", "the object", "the square", "the circle", "the box", "it"]
+OBJECTS = ["the shape", "the object", "the square", "the circle", "the box", "it", "the image", "the picture"]
 
 # Verbs, grouped by the transform they imply
 TRANSLATE_VERBS = ["move", "shift", "nudge", "push"]
