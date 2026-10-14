@@ -79,3 +79,9 @@
 - Decision: validation split added — model settings are chosen on val, never on test
 - Decision: unseen adverbs and verbs are tested on GeoBench, whose real instructions use words absent from our training vocabulary; replaced the planned word-swap test sets, which added complexity for a weaker test
 - Overlap: 108 of 548 test sentences (20%) also appear in train with different numbers — intended; the unseen-template set and GeoBench measure unseen phrasing
+
+
+## 2026-10-14 · GeoBench test file
+- geobench.py: converts all 5,677 GeoBench 2D rows into our format in data/splits/geobench.jsonl — tx, ty / 512; θ = −rz; log sx
+- Each row records its level (GeoBench adverb → small / medium / large) and whether the adverb is in our training vocabulary (adverb_seen), for the seen-vs-unseen-words comparison
+- Instructions lower-cased to match training data; geobench_index kept so the image demo can find each row's picture
