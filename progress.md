@@ -3,6 +3,7 @@
 - Decision: CPU-only torch — no GPU needed for prep-stage experiments.
 - Decision: dataset generated not collected → data/ gitignored, seed + generator are the artifact.
 
+
 ## 2026-10-04 · Days 2–4
 **Done**
 - Transform spec written (spec/transform_spec.md)
@@ -52,6 +53,7 @@
 - Decision: 3 levels (small/medium/large) to match GeoBench; dropped our "huge" level, which had no real data to calibrate against; "drastically" moved to large, "massively" removed
 - Decision: uniform sampling within each range, from one seeded random generator passed in, so the dataset is reproducible
 
+
 ## 2026-10-06 · Generator v1
 - generate.py: single-transform examples (translate / rotate / scale in equal shares), vague magnitude words only
 - First run: 5,000 examples, seed 42, into data/dataset_v1.jsonl (regenerated from code; not in git)
@@ -69,3 +71,11 @@
 - Mask IoU becomes transform-consistency IoU: warp the same mask with the predicted and the true matrix and compare
 - Added "the image" and "the picture" to the object words
 - Object-level editing kept as a possible later extension
+
+
+## 2026-10-14 · Splits
+- build_splits.py: train / val / test (random 80/10/10) plus test_unseen_templates ("can you ..." patterns never seen in training)
+- Sizes: train 4,376 · val 547 · test 548 · test_unseen_templates 1,464; 65 exact duplicates removed from 7,000
+- Decision: validation split added — model settings are chosen on val, never on test
+- Decision: unseen adverbs and verbs are tested on GeoBench, whose real instructions use words absent from our training vocabulary; replaced the planned word-swap test sets, which added complexity for a weaker test
+- Overlap: 108 of 548 test sentences (20%) also appear in train with different numbers — intended; the unseen-template set and GeoBench measure unseen phrasing

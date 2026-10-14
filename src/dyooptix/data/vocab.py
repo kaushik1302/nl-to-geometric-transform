@@ -44,18 +44,6 @@ ADVERBS = {
     "large": ["significantly", "a lot", "drastically"],
 }
 
-# Never used in training: only in the held-out-adverb test split (RQ2)
-HELD_OUT_ADVERBS = {
-    "a touch": "small",
-    "considerably": "large",
-}
-
-# Never used in training: only in the held-out-verb test split
-HELD_OUT_VERBS = {
-    "slide": "translate",
-    "expand": "scale_up",
-}
-
 # Sentence patterns; the generator fills {verb} {obj} {adv} {dir}.
 # A template's position in its list is its id, so whole templates can be held out.
 TEMPLATES = {
@@ -88,3 +76,7 @@ CLAUSE_TEMPLATES = {
 
 # Words that join clauses in combined instructions
 JOINERS = [" and ", ", then "]
+
+# Sentence patterns held out of training: only in the held-out-template test set.
+# These are the "can you ..." patterns, the only templates with that opening.
+HELD_OUT_TEMPLATES = {"translate": 3, "rotate": 3, "scale": 2}
