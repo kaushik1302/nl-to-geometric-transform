@@ -154,3 +154,9 @@
 - hand_features: regexes read decimals ("22.5 degrees") and the new formats; neutral-verb flags added: 38 columns (35 flags + 3 numbers).
 - Not added: object nouns. Objects will come from detection later; named objects are a stated limitation.
 - Checked 20 generated samples by hand and hand features on 6 test sentences: all correct.
+
+
+## 2026-10-16 · Gradio demo v1
+- app.py: instruction + optional image (default: generated test card with grid, arrow and "TOP") + choice of hand or MiniLM. Shows the edited image, presence probabilities, tx/ty in px, θ, scale and the 2×3 matrix.
+- Text is lowercased and stripped of end punctuation, as in training. Inputs standardised with the saved train mean/std. Only hand and MiniLM offered: TF-IDF's fitted vocabulary was not saved; CLIP was worst on GeoBench.
+- Testing it found two problems, fixed in generator v3 and the next app version: rotations above 39° were never trained ("rotate 90 degrees" failed), and explicit pixel amounts were scaled by the uploaded image's width instead of meaning real pixels.
