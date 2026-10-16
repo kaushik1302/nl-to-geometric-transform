@@ -85,3 +85,13 @@
 - geobench.py: converts all 5,677 GeoBench 2D rows into our format in data/splits/geobench.jsonl — tx, ty / 512; θ = −rz; log sx
 - Each row records its level (GeoBench adverb → small / medium / large) and whether the adverb is in our training vocabulary (adverb_seen), for the seen-vs-unseen-words comparison
 - Instructions lower-cased to match training data; geobench_index kept so the image demo can find each row's picture
+
+
+## 2026-10-16 · Text representations
+- Each split is encoded once and saved to data/features/<split>_<rep>.npy, so training never re-runs CLIP or MiniLM.
+- hand: 30 keyword flags (verbs, directions, adverbs) + 3 explicit numbers (pixels/512, degrees, log of factor) = 33 columns.
+- tfidf: word and two-word counts, fitted on train only so val/test words don't leak into the vocabulary.
+- clip: frozen CLIP ViT-B/32 text encoder, 512 columns, L2-normalised.
+- minilm: frozen all-MiniLM-L6-v2, 384 columns.
+- TF-IDF has 1,071 columns: it treats every number as a separate word ("by 155" and "by 156" are unrelated to it), unlike the hand features.
+- Checked: "nudge the box slightly to the left, then rotate it by 30 degrees clockwise" → flags nudge, rotate, to the left, clockwise, slightly; numbers [0, 30, 0].
