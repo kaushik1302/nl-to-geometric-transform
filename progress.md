@@ -105,3 +105,17 @@
 - test_unseen_templates has only single edits, so constant is lower there (142 vs 172 px). Compared as ridge ÷ constant: hand 0.49 → 0.49, tfidf 0.52 → 0.51, clip 0.54 → 0.71, minilm 0.54 → 0.61. Keyword features ignore the new phrasing; sentence embeddings are thrown off by it.
 - GeoBench (unseen adverbs): constant 110 px; only hand beats it (92). tfidf 115, clip 190, minilm 322: unseen words push embeddings to regions the linear weights extrapolate badly from.
 - Corner error is dominated by scale: corners sit ~362 px from the centre, so a 16% scale error moves them ~58 px. Always report the four separate MAEs too.
+
+
+## 2026-10-16 · Gated MLP
+- mlp.py: shared trunk Linear(n→256)–ReLU–Dropout(0.1)–Linear(256→256)–ReLU; presence head (3 logits) and value head (tx, ty, cos, sin, log s).
+- Loss = BCE on presence + L1 on values masked to the edits that are present. L1 because the metric is MAE (pushes towards the median).
+- Prediction is gated: an edit whose logit ≤ 0 is set to its do-nothing value.
+- Inputs standardised with train mean/std. Adam lr 1e-3, batch 64, ReduceLROnPlateau (×0.5, patience 5), early stopping on val loss (patience 15, best weights restored), seed 0. Models saved to outputs/mlp_<rep>.pt, results to outputs/mlp.csv.
+- Stopped at epoch: hand 91, tfidf 47, clip 126, minilm 91.
+- Val corner error (constant 170): hand 83 → 42, clip 88 → 50, minilm 93 → 54, tfidf 90 → 65 (ridge → MLP). The non-linear model fixes the direction × magnitude problem.
+- Presence F1 = 1.000 on synthetic val/test (hand, clip, minilm): detecting which edit is easy; the remaining error is magnitude.
+- Phrasing sensitivity of embeddings mostly gone: clip MLP ÷ constant 0.32 on test, 0.28 on unseen templates (ridge: 0.54 → 0.71).
+- GeoBench (constant 110): hand 92, minilm 97, tfidf 104, clip 115. Presence F1 drops to 0.74–0.82, so some GeoBench verbs are unseen.
+- Hand features use the generator's own vocabulary, so their synthetic advantage is partly by construction; human-written instructions are the real test.
+- Single seed: differences under ~5 px are not meaningful.
