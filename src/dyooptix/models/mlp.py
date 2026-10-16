@@ -106,7 +106,7 @@ def train(rep):
                 break
 
     print(f"{rep}: stopped at epoch {epoch + 1}, best val loss {best_loss:.4f}")
-    model.load_state_dict(best_state)
+    model.load_state_dict(best_state) # type: ignore
     return model, mean, std
 
 
