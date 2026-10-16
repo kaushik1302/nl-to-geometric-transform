@@ -66,7 +66,7 @@ if __name__ == "__main__":
     for split, sents in sentences.items():
         features = {
             "hand": np.array([hand_features(s) for s in sents]),
-            "tfidf": tfidf.transform(sents).toarray(),
+            "tfidf": tfidf.transform(sents).toarray(), # type: ignore
             "clip": clip_vectors(sents, clip_model, clip_tokenizer),
             "minilm": minilm.encode(sents, batch_size=256),
         }
