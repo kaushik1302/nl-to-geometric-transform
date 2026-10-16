@@ -119,3 +119,27 @@
 - GeoBench (constant 110): hand 92, minilm 97, tfidf 104, clip 115. Presence F1 drops to 0.74–0.82, so some GeoBench verbs are unseen.
 - Hand features use the generator's own vocabulary, so their synthetic advantage is partly by construction; human-written instructions are the real test.
 - Single seed: differences under ~5 px are not meaningful.
+
+
+## 2026-10-16 · Breakdown and noise floor
+- breakdown.py: MLP errors per group (category; level for single edits; on GeoBench also adverb_seen and verb_seen), saved to outputs/breakdown.csv.
+- Oracle = perfect reader: copies explicit amounts, uses true direction + midpoint of the level's range for vague ones. Its error ≈ the lowest a text-only model can reach on synthetic data.
+- Test corner: hand MLP 43.6 vs oracle 27.0. Single edits are near the floor (rotate 16.0 vs 15.2, translate 18.9 vs 15.9; unseen templates 23.0 vs 20.6).
+- Combined edits hold most of the gap (hand 87 vs oracle 42): keyword flags have no word order, so the model cannot tell which adverb belongs to which verb (binding problem). Embeddings also fail (108–112). Candidate for novelty: split into clauses, predict each, compose.
+- Explicit amounts: hand 5.6, clip 25.6, minilm 24.4, tfidf 77.7 (oracle 0). Embeddings read numbers only roughly; TF-IDF treats each number as a separate word.
+- GeoBench: 2,661 / 5,677 rows (47%) start with an unseen verb (contract, swivel, drag, amplify, zoom, slide, expand). Presence accuracy on unseen verbs: hand 0.088, minilm 0.487, clip 0.470, tfidf 0.221 (seen verbs: hand 1.000, minilm 0.899).
+- Hand features are best on known vocabulary; MiniLM generalises best to new verbs (translate presence 0.965). The demo will offer both.
+- CLIP presence is low on GeoBench even for seen verbs (0.632; rotate 0.334). Hypothesis (not tested): new object nouns dominate the CLIP sentence vector.
+- GeoBench verbs are not added to training: that would leak test vocabulary.
+- To check: GeoBench large-level errors (~150–170 px) by category.
+
+
+## 2026-10-16 · Image warping and IoU (D5)
+- warp.py: applies [tx, ty, cos, sin, log s] to the whole image about its centre (bilinear for images, nearest for masks); iou() for binary masks.
+- GeoBench ori_img is 512×512, so the px/512 translation conversion was correct. ori_mask is 640×640 and is resized to 512 (nearest) before use.
+- showcase.py: transform-consistency IoU on all 5,677 GeoBench rows (mask warped by true vs predicted edit), saved to outputs/iou_geobench.csv; qualitative grid (2 per edit type, seed 0) saved to outputs/qualitative_geobench.png.
+- Do-nothing reference (unmoved mask vs true result) added: IoU alone depends on object size and position, so it needs a reference.
+- Mean IoU: hand 0.52, minilm 0.48, tfidf 0.47, clip 0.44, do nothing 0.46. Rotate: hand 0.69 vs 0.61; scale: hand 0.53 vs 0.44; translate: all ≈ do nothing (hand 0.32 vs 0.33).
+- Translation fails because GeoBench directions ("leftward", "upward", "upper-left") never appear in training ("to the left", "up", "toward the top-right"): the edit is detected but moved the wrong way, which overlaps less than not moving.
+- GeoBench tests three kinds of unseen words: verbs (presence fails), directions (wrong direction), adverbs (wrong size). Not added to training (test vocabulary leak). Novelty candidates: clause splitting for combined edits; paraphrase/synonym augmentation evaluated on human instructions.
+- Mask alignment checked visually on the grid: outline sits on the object. Outlines are markers only (red = true edit, green = prediction); the whole image is warped, as the black borders show.
