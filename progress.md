@@ -95,3 +95,13 @@
 - minilm: frozen all-MiniLM-L6-v2, 384 columns.
 - TF-IDF has 1,071 columns: it treats every number as a separate word ("by 155" and "by 156" are unrelated to it), unlike the hand features.
 - Checked: "nudge the box slightly to the left, then rotate it by 30 degrees clockwise" → flags nudge, rotate, to the left, clockwise, slightly; numbers [0, 30, 0].
+
+
+## 2026-10-16 · Baselines
+- metrics.py: MAE of tx, ty (pixels at 512 width), θ (degrees, wrapped), log s, and mean corner displacement of a 512×512 image (one combined number, used for model selection).
+- Constant baseline: train median of each target column, ignores the sentence.
+- Ridge (StandardScaler + Ridge) per representation; alpha from {0.1, 1, 10, 100, 1000} chosen on val corner error. Results saved to outputs/baselines.csv.
+- Val corner error: constant 170 px; ridge hand 83, clip 88, tfidf 90, minilm 93. Ridge halves the error but stays high: a linear model adds weights and cannot multiply direction by magnitude ("slightly" must be −0.09 for left, +0.09 for right). This is why the MLP is needed.
+- test_unseen_templates has only single edits, so constant is lower there (142 vs 172 px). Compared as ridge ÷ constant: hand 0.49 → 0.49, tfidf 0.52 → 0.51, clip 0.54 → 0.71, minilm 0.54 → 0.61. Keyword features ignore the new phrasing; sentence embeddings are thrown off by it.
+- GeoBench (unseen adverbs): constant 110 px; only hand beats it (92). tfidf 115, clip 190, minilm 322: unseen words push embeddings to regions the linear weights extrapolate badly from.
+- Corner error is dominated by scale: corners sit ~362 px from the centre, so a 16% scale error moves them ~58 px. Always report the four separate MAEs too.
