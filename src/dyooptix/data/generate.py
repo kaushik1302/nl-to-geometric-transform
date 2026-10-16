@@ -1,7 +1,9 @@
 """Generate the synthetic instruction dataset.
 
-Version 2: four equally likely categories — translate only, rotate only,
+Version 3: four equally likely categories — translate only, rotate only,
 scale only, and combined (2 or 3 edits) — with vague or explicit amounts.
+v3 adds wider explicit ranges, several number formats (px, °, 2x), and
+neutral scale verbs (scale/resize) whose factor gives the direction.
 """
 import json
 import math
@@ -19,42 +21,67 @@ EXPLICIT_SHARE = 0.25                    # fraction of edits with an exact numbe
 def pick_amount(kind, rng):
     """How much? Returns (size, phrase, level). Size is positive, in model units."""
     if rng.random() < EXPLICIT_SHARE:
+        if kind == "scale":
+            return None, None, "explicit"     # decided in explicit_scale(): it needs the direction first
         low, high = EXPLICIT_RANGES[kind]
+        phrase = rng.choice(vocab.EXPLICIT_PHRASES[kind])
         if kind == "translate":
             pixels = rng.randint(low, high)
-            return pixels / REFERENCE_WIDTH, f"by {pixels} pixels", "explicit"
-        if kind == "rotate":
-            degrees = rng.randint(low, high)
-            return degrees, f"by {degrees} degrees", "explicit"
-        factor = round(rng.uniform(low, high), 1)
-        return math.log(factor), f"by a factor of {factor:g}", "explicit"
+            return pixels / REFERENCE_WIDTH, phrase.format(n=pixels), "explicit"
+        degrees = rng.randint(low, high)
+        return degrees, phrase.format(n=degrees), "explicit"
 
     level = rng.choice(list(vocab.ADVERBS))
     return sample_size(kind, level, rng), rng.choice(vocab.ADVERBS[level]), level
 
 
-def add_edit(kind, size, rng, target):
-    """Which way? Writes this edit's numbers into target; returns (verb, direction)."""
+def explicit_scale(rng, target):
+    """Explicit scale in one of three forms. Writes target[4]; returns (verb, phrase)."""
+    low, high = EXPLICIT_RANGES["scale"]
+    form = rng.choice(["bigger", "smaller_result", "smaller_divisor"])
+    if form == "bigger":                      # "enlarge it by 2.5x", "scale it to 3x"
+        n = round(rng.uniform(low, high), 1)
+        target[4] = math.log(n)
+        verbs = vocab.SCALE_UP_VERBS + vocab.SCALE_NEUTRAL_VERBS
+        phrase = rng.choice(["by a factor of {n}", "by {n}x", "to {n}x"])
+    elif form == "smaller_result":            # "shrink it to 0.7x", "resize it by 0.75x"
+        n = round(rng.uniform(1 / high, 1 / low), 2)
+        target[4] = math.log(n)
+        verbs = vocab.SCALE_DOWN_VERBS + vocab.SCALE_NEUTRAL_VERBS
+        phrase = rng.choice(["to {n}x", "by {n}x"])
+    else:                                     # "shrink it by a factor of 2": shrink verbs only
+        n = round(rng.uniform(low, high), 1)
+        target[4] = -math.log(n)
+        verbs = vocab.SCALE_DOWN_VERBS
+        phrase = rng.choice(["by a factor of {n}", "by {n}x"])
+    return rng.choice(verbs), phrase.format(n=f"{n:g}")
+
+
+def add_edit(kind, size, amount, level, rng, target):
+    """Which way? Writes this edit's numbers into target; returns (verb, direction, amount)."""
     if kind == "translate":
         direction = rng.choice(list(vocab.TRANSLATE_DIRECTIONS))
         dx, dy = vocab.TRANSLATE_DIRECTIONS[direction]
         target[0] = size * dx
         target[1] = size * dy
-        return rng.choice(vocab.TRANSLATE_VERBS), direction
+        return rng.choice(vocab.TRANSLATE_VERBS), direction, amount
 
     if kind == "rotate":
         sign = rng.choice([-1, 1])
         theta = math.radians(size * sign)
         target[2] = math.cos(theta)
         target[3] = math.sin(theta)
-        return rng.choice(vocab.ROTATE_VERBS), rng.choice(vocab.ROTATE_DIRECTIONS[sign])
+        return rng.choice(vocab.ROTATE_VERBS), rng.choice(vocab.ROTATE_DIRECTIONS[sign]), amount
 
-    # scale: the verb decides bigger or smaller
-    if rng.random() < 0.5:
+    # scale
+    if level == "explicit":
+        verb, amount = explicit_scale(rng, target)
+        return verb, "", amount
+    if rng.random() < 0.5:                    # vague: the verb decides bigger or smaller
         target[4] = size
-        return rng.choice(vocab.SCALE_UP_VERBS), ""
+        return rng.choice(vocab.SCALE_UP_VERBS), "", amount
     target[4] = -size
-    return rng.choice(vocab.SCALE_DOWN_VERBS), ""
+    return rng.choice(vocab.SCALE_DOWN_VERBS), "", amount
 
 
 def make_example(rng):
@@ -73,7 +100,7 @@ def make_example(rng):
 
     for i, kind in enumerate(kinds):
         size, amount, level = pick_amount(kind, rng)
-        verb, direction = add_edit(kind, size, rng, target)
+        verb, direction, amount = add_edit(kind, size, amount, level, rng, target)
         presence[KIND_INDEX[kind]] = 1
         levels.append(level)
 

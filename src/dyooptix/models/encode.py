@@ -18,24 +18,22 @@ from dyooptix.data import vocab
 SPLITS = ["train", "val", "test", "test_unseen_templates", "geobench"]
 
 # Every meaningful phrase in the training vocabulary (object words are left out)
-KEYWORDS = (vocab.TRANSLATE_VERBS + vocab.ROTATE_VERBS
-            + vocab.SCALE_UP_VERBS + vocab.SCALE_DOWN_VERBS
+KEYWORDS = (vocab.TRANSLATE_VERBS + vocab.ROTATE_VERBS + vocab.SCALE_UP_VERBS + vocab.SCALE_DOWN_VERBS
+            + vocab.SCALE_NEUTRAL_VERBS
             + list(vocab.TRANSLATE_DIRECTIONS)
             + [p for phrases in vocab.ROTATE_DIRECTIONS.values() for p in phrases]
             + [w for words in vocab.ADVERBS.values() for w in words])
 
 
 def hand_features(sentence):
-    """A 0/1 flag per keyword, then the three explicit numbers (0 when absent)."""
     padded = " " + sentence.replace(",", " ") + " "
     flags = [int(" " + k + " " in padded) for k in KEYWORDS]
-
-    px = re.search(r"by (\d+) pixels", sentence)
-    deg = re.search(r"by (\d+) degrees", sentence)
-    fac = re.search(r"by a factor of ([\d.]+)", sentence)
-    numbers = [int(px.group(1)) / 512 if px else 0,
-               int(deg.group(1)) if deg else 0,
-               float(np.log(float(fac.group(1)))) if fac else 0]
+    px = re.search(r"([\d.]+)\s*(?:pixels|px)\b", sentence)
+    deg = re.search(r"([\d.]+)\s*(?:degrees|deg\b|°)", sentence)
+    fac = re.search(r"factor of ([\d.]+)|([\d.]+)\s*x\b", sentence)
+    numbers = [float(px.group(1)) / 512 if px else 0,
+               float(deg.group(1)) if deg else 0,
+               float(np.log(float(fac.group(1) or fac.group(2)))) if fac else 0]
     return flags + numbers
 
 

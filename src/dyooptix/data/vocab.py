@@ -80,3 +80,12 @@ JOINERS = [" and ", ", then "]
 # Sentence patterns held out of training: only in the held-out-template test set.
 # These are the "can you ..." patterns, the only templates with that opening.
 HELD_OUT_TEMPLATES = {"translate": 3, "rotate": 3, "scale": 2}
+
+# v3: verbs that give no direction; the explicit factor does (2x bigger, 0.5x smaller)
+SCALE_NEUTRAL_VERBS = ["scale", "resize"]
+
+# v3: several ways of writing an explicit number; {n} is filled in by the generator
+EXPLICIT_PHRASES = {
+    "translate": ["by {n} pixels", "by {n} px", "{n} pixels", "{n} px"],
+    "rotate": ["by {n} degrees", "by {n}°", "{n} degrees", "by {n} deg"],
+}

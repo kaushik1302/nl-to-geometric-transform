@@ -143,3 +143,14 @@
 - Translation fails because GeoBench directions ("leftward", "upward", "upper-left") never appear in training ("to the left", "up", "toward the top-right"): the edit is detected but moved the wrong way, which overlaps less than not moving.
 - GeoBench tests three kinds of unseen words: verbs (presence fails), directions (wrong direction), adverbs (wrong size). Not added to training (test vocabulary leak). Novelty candidates: clause splitting for combined edits; paraphrase/synonym augmentation evaluated on human instructions.
 - Mask alignment checked visually on the grid: outline sits on the object. Outlines are markers only (red = true edit, green = prediction); the whole image is warped, as the black borders show.
+
+
+## 2026-10-16 · Generator v3 (after demo testing)
+- Demo test "rotate the image clock-wise by 90 degrees" failed: no training rotation exceeded 39° (explicit range was 5–39), and a regressor does not extrapolate beyond its training range.
+- Explicit ranges widened: rotate 5–180° (covers every distinct rotation), translate 20–300 px, scale ×1.1–4.0. Vague ranges unchanged (still calibrated to GeoBench): an explicit number carries its own size.
+- More number formats: "px", "°", "deg", "2x", alongside "pixels", "degrees", "by a factor of".
+- Neutral scale verbs "scale"/"resize", only with explicit factors: the factor gives the direction (2x bigger, 0.5x smaller). "Scale it slightly" has no direction, so it is never generated.
+- Explicit scale in three forms: bigger (×1.1–4.0), smaller as the result ("to 0.7x", 0.25–0.91, 2 decimals), smaller as a divisor ("shrink by a factor of 2", shrink verbs only). The target uses the rounded number the sentence shows.
+- hand_features: regexes read decimals ("22.5 degrees") and the new formats; neutral-verb flags added: 38 columns (35 flags + 3 numbers).
+- Not added: object nouns. Objects will come from detection later; named objects are a stated limitation.
+- Checked 20 generated samples by hand and hand features on 6 test sentences: all correct.

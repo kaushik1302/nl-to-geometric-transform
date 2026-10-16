@@ -12,13 +12,14 @@ RANGES = {
     "scale":     {"small": (0.10, 0.26), "medium": (0.23, 0.51), "large": (0.41, 1.06)},
 }
 
-# Ranges for explicit numbers ("by 30 degrees"), spanning all three levels.
-# translate: whole pixels on a 512-px reference width; rotate: whole degrees;
-# scale: a factor, used for both enlarging and shrinking.
+# Ranges for explicit numbers ("by 30 degrees"). Wider than GeoBench on purpose:
+# an explicit number carries its own size, so only vague words need calibrating.
+# translate: whole pixels on a 512-px reference width; rotate: whole degrees
+# (180 covers every distinct rotation); scale: a factor, for enlarging and shrinking.
 EXPLICIT_RANGES = {
-    "translate": (26, 240),
-    "rotate": (5, 39),
-    "scale": (1.1, 2.9),
+    "translate": (20, 300),
+    "rotate": (5, 180),
+    "scale": (1.1, 4.0),
 }
 
 
