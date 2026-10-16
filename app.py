@@ -1,138 +1,127 @@
-import copy
-import json
+import re
+import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))  # lets app.py import dyooptix without installing the package
+
+import cv2
+import gradio as gr
 import numpy as np
-import pandas as pd
 import torch
-from sklearn.metrics import f1_score
-from torch import nn
+from sentence_transformers import SentenceTransformer
 
-from dyooptix.models.metrics import evaluate
+from dyooptix.geom.affine import build_affine
+from dyooptix.geom.warp import warp
+from dyooptix.models.breakdown import load_model
+from dyooptix.models.encode import hand_features
+from dyooptix.models.metrics import to_params
+from dyooptix.models.mlp import predict, standardise
 
-REPS = ["hand", "tfidf", "clip", "minilm"]
-EVAL_SPLITS = ["val", "test", "test_unseen_templates", "geobench"]
-METRICS = ["tx_px", "ty_px", "theta_deg", "log_s", "corner_px", "presence_f1"]
-# Which edit owns each target column: translate -> tx, ty; rotate -> cos, sin; scale -> log s
-COLUMN_EDIT = [0, 0, 1, 1, 2]
-DO_NOTHING = torch.tensor([0.0, 0.0, 1.0, 0.0, 0.0])
-SEEDS = [0, 1, 2]  # every model is trained 3 times; results reported as mean ± std
+REPS = ["hand+minilm", "hand", "minilm"]   # the first one is the default
+EDITS = ["translate", "rotate", "scale"]
+REFERENCE_WIDTH = 512                      # explicit pixels in training refer to a 512-wide image
+PIXELS = re.compile(r"\d\s*(?:pixels|px)\b")
 
-HIDDEN = 256
-BATCH = 64
-LR = 1e-3
-MAX_EPOCHS = 200
-PATIENCE = 15
+# Spelling variants of the same word -> the spelling used in training (demo input cleaning only)
+SPELLINGS = {
+    "clock-wise": "clockwise", "clock wise": "clockwise",
+    "anti-clockwise": "anticlockwise", "anti clockwise": "anticlockwise",
+    "counterclockwise": "counter-clockwise", "counter clockwise": "counter-clockwise",
+}
 
-
-def load_split(split, rep):
-    X = np.load(f"data/features/{split}_{rep}.npy")
-    with open(f"data/splits/{split}.jsonl") as f:
-        rows = [json.loads(line) for line in f]
-    y = np.array([r["target"] for r in rows], dtype=np.float32)
-    presence = np.array([r["presence"] for r in rows], dtype=np.float32)
-    return X, y, presence
+MODELS = {rep: load_model(rep) for rep in REPS}  # loaded once, at start-up
+MINILM = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-def standardise(X, mean, std):
-    return torch.tensor((X - mean) / std, dtype=torch.float32)
+def normalise(sentence):
+    for variant, canonical in SPELLINGS.items():
+        sentence = sentence.replace(variant, canonical)
+    return sentence
 
 
-class GatedMLP(nn.Module):
-    def __init__(self, n_in):
-        super().__init__()
-        self.trunk = nn.Sequential(
-            nn.Linear(n_in, HIDDEN), nn.ReLU(), nn.Dropout(0.1),
-            nn.Linear(HIDDEN, HIDDEN), nn.ReLU(),
-        )
-        self.presence_head = nn.Linear(HIDDEN, 3)  # logits: translate, rotate, scale present?
-        self.value_head = nn.Linear(HIDDEN, 5)     # tx, ty, cos, sin, log s
-
-    def forward(self, x):
-        h = self.trunk(x)
-        return self.presence_head(h), self.value_head(h)
+def sample_image(size=512):
+    """Test card: grid, square, upward arrow, circle and 'TOP', so every edit is easy to see."""
+    image = np.full((size, size, 3), 255, dtype=np.uint8)
+    for k in range(0, size, 64):
+        cv2.line(image, (k, 0), (k, size), (220, 220, 220), 1)
+        cv2.line(image, (0, k), (size, k), (220, 220, 220), 1)
+    cv2.rectangle(image, (176, 176), (336, 336), (40, 90, 200), -1)
+    cv2.arrowedLine(image, (256, 310), (256, 200), (255, 255, 255), 8, tipLength=0.3)
+    cv2.circle(image, (400, 110), 40, (220, 60, 60), -1)
+    cv2.putText(image, "TOP", (215, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 3)
+    return image
 
 
-def loss_fn(logits, values, y, presence):
-    presence_loss = nn.functional.binary_cross_entropy_with_logits(logits, presence)
-    mask = presence[:, COLUMN_EDIT]  # 1 where the edit owning that column is present
-    value_loss = (torch.abs(values - y) * mask).sum() / mask.sum().clamp(min=1)
-    return presence_loss + value_loss
-
-
-def predict(model, X):
-    model.eval()
-    with torch.no_grad():
-        logits, values = model(X)
-    present = logits > 0                             # logit > 0  <=>  probability > 0.5
-    pred = torch.where(present[:, COLUMN_EDIT], values, DO_NOTHING)
-    return pred.numpy(), present.numpy().astype(int)
-
-
-def train(rep, seed):
-    X_train, y_train, p_train = load_split("train", rep)
-    X_val, y_val, p_val = load_split("val", rep)
-    mean, std = X_train.mean(axis=0), X_train.std(axis=0) + 1e-6
-
-    Xt, yt, pt = standardise(X_train, mean, std), torch.tensor(y_train), torch.tensor(p_train)
-    Xv, yv, pv = standardise(X_val, mean, std), torch.tensor(y_val), torch.tensor(p_val)
-
-    torch.manual_seed(seed)  # fixes initial weights, batch order and dropout for this run
-    model = GatedMLP(X_train.shape[1])
-    optimizer = torch.optim.Adam(model.parameters(), lr=LR)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=5)
-
-    best_loss, best_state, bad_epochs = np.inf, None, 0
-    for epoch in range(MAX_EPOCHS):
-        model.train()
-        order = torch.randperm(len(Xt))
-        for start in range(0, len(Xt), BATCH):
-            idx = order[start:start + BATCH]
-            logits, values = model(Xt[idx])
-            loss = loss_fn(logits, values, yt[idx], pt[idx])
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-        model.eval()
-        with torch.no_grad():
-            logits, values = model(Xv)
-            val_loss = loss_fn(logits, values, yv, pv).item()
-        scheduler.step(val_loss)
-
-        if val_loss < best_loss:
-            best_loss, best_state, bad_epochs = val_loss, copy.deepcopy(model.state_dict()), 0
+def encode(sentence, rep):
+    """Same features as in training; "hand+minilm" stacks hand then MiniLM, like load_features."""
+    parts = []
+    for part in rep.split("+"):
+        if part == "hand":
+            parts.append(np.array([hand_features(sentence)], dtype=np.float32))
         else:
-            bad_epochs += 1
-            if bad_epochs == PATIENCE:
-                break
-
-    print(f"{rep} seed {seed}: stopped at epoch {epoch + 1}, best val loss {best_loss:.4f}")
-    model.load_state_dict(best_state)  # type: ignore
-    return model, mean, std
+            parts.append(MINILM.encode([sentence]))
+    return np.hstack(parts)
 
 
-def main():
-    rows = []
-    for rep in REPS:
-        for seed in SEEDS:
-            model, mean, std = train(rep, seed)
-            if seed == 0:  # the seed-0 model is used by breakdown, showcase and the demo
-                torch.save({"state": model.state_dict(), "mean": torch.tensor(mean), "std": torch.tensor(std)},
-                           f"outputs/mlp_{rep}.pt")
-            for split in EVAL_SPLITS:
-                X, y, presence = load_split(split, rep)
-                pred, present = predict(model, standardise(X, mean, std))
-                scores = evaluate(y, pred)
-                scores["presence_f1"] = f1_score(presence.astype(int), present, average="macro")
-                rows.append({"model": f"mlp_{rep}", "split": split, "seed": seed, **scores})
+def edit(instruction, image, rep):
+    if image is None:
+        image = sample_image()
+    sentence = normalise(instruction.lower().strip().rstrip(".!?"))
+    if not sentence:
+        return image, "Type an instruction."
 
-    df = pd.DataFrame(rows)
-    df.to_csv("outputs/mlp.csv", index=False)  # every seed, every split
-    summary = df.groupby(["model", "split"], sort=False)[METRICS].agg(["mean", "std"])
-    summary.to_csv("outputs/mlp_summary.csv")
-    pd.set_option("display.width", 250)
-    print(summary.round(3))
+    model, mean, std = MODELS[rep]
+    x = standardise(encode(sentence, rep), mean, std)
+    pred, _ = predict(model, x)                        # gated [tx, ty, cos, sin, log s]
+    with torch.no_grad():
+        probs = torch.sigmoid(model(x)[0])[0].numpy()  # presence probabilities, for display
 
+    target = pred[0].copy()
+    h, w = image.shape[:2]
+    explicit_px = bool(PIXELS.search(sentence))
+    if explicit_px:
+        # tx, ty are fractions of a 512-px width; "50 px" must mean 50 real pixels of this image
+        target[0] *= REFERENCE_WIDTH / w
+        target[1] *= REFERENCE_WIDTH / w
+
+    p = to_params(target)
+    angle = np.degrees(np.arctan2(p["sin"], p["cos"]))
+    M = build_affine(p, (w / 2, h / 2), w)
+
+    lines = [f"Model: {rep}", f"Text used: {sentence}", "Detected edits (probability):"]
+    lines += [f"  {name:9}  {prob:.2f}  {'✓' if prob > 0.5 else ''}" for name, prob in zip(EDITS, probs)]
+    lines += [f"Translation: tx = {p['tx'] * w:+.0f} px, ty = {p['ty'] * w:+.0f} px   (+x right, +y down)"
+              + ("   [explicit pixels: real pixels of this image]" if explicit_px else ""),
+              f"Rotation:    {angle:+.1f}°   (+ = counter-clockwise)",
+              f"Scale:       ×{np.exp(p['log_s']):.2f}",
+              f"Image size:  {w} × {h}",
+              "Affine matrix (2×3):",
+              np.array2string(M, precision=2, suppress_small=True)]
+    return warp(image, target, cv2.INTER_LINEAR), "\n".join(lines)
+
+
+demo = gr.Interface(
+    fn=edit,
+    inputs=[
+        gr.Textbox(label="Edit instruction", placeholder="e.g. rotate it 90 degrees clockwise and shrink it to 0.7x"),
+        gr.Image(type="numpy", label="Image (leave empty to use the test card)"),
+        gr.Radio(REPS, value=REPS[0], label="Text representation"),
+    ],
+    outputs=[gr.Image(label="Edited image"), gr.Textbox(label="Predicted parameters", lines=13)],
+    examples=[
+        ["rotate the image by 90 degrees clockwise", None, "hand+minilm"],
+        ["move it 100 px to the right", None, "hand"],
+        ["scale it to 0.5x", None, "hand+minilm"],
+        ["shrink it to 0.7x and turn it slightly counter-clockwise", None, "hand+minilm"],
+        ["move it slightly to the left and enlarge it a lot", None, "hand"],
+        ["drag the box upward mildly", None, "hand+minilm"],
+    ],
+    title="DyoOptix: natural-language geometric edits",
+    description="Type an edit instruction. The model predicts translation, rotation and scale, "
+                "and applies them to the whole image about its centre. "
+                "hand+minilm is the default; hand is most precise with known words and exact numbers; "
+                "minilm copes best with new wording on its own.",
+)
 
 if __name__ == "__main__":
-    main()
+    demo.launch(share="--share" in sys.argv)  # python app.py --share  ->  temporary public link

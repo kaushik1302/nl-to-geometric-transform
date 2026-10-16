@@ -176,3 +176,12 @@
 - Combined edits still the main gap (hand 97.5, hand+minilm 102.7, oracle 36.0). Single edits with hand near the floor (unseen templates 22.5 vs 19.6).
 - Out-of-distribution instability: GeoBench std clip 16.2, minilm 7.9, hand 1.1. TF-IDF unstable even on val (std 6.7; stops at epoch 20–30).
 - Demo default will be hand+minilm (failing slightly on numbers is less harmful live than doing nothing on an unseen verb); hand and minilm stay selectable.
+
+
+## 2026-10-17 · Gradio demo v2
+- Three text representations: hand+minilm (default), hand, minilm. The combined input is built exactly as in training (hand features then MiniLM, side by side).
+- Explicit pixel amounts are converted to real pixels of the uploaded image: the model's tx, ty are fractions of a 512-px width, so they are multiplied by 512/W when the sentence states pixels. Vague amounts stay relative to image width.
+- Spelling variants of direction words (clock-wise, anti clockwise, counterclockwise, …) are normalised to the training spelling before encoding. Demo input cleaning only; reported metrics use raw text.
+- Output box shows the text actually used (after cleaning), presence probabilities, tx/ty in px, θ, scale, image size and the 2×3 matrix.
+- `python app.py --share` gives a temporary public link for testing with others.
+- Manual testing agrees with the measured results: minilm handles new translation verbs better, hand handles explicit scale factors better; the combination gets most of both.
