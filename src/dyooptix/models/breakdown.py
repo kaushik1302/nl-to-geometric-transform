@@ -7,7 +7,7 @@ import torch
 from dyooptix.data import vocab
 from dyooptix.data.distributions import RANGES
 from dyooptix.models.metrics import evaluate
-from dyooptix.models.mlp import REPS, GatedMLP, predict, standardise
+from dyooptix.models.mlp import REPS, GatedMLP, load_features, predict, standardise
 
 SPLITS = ["test", "test_unseen_templates", "geobench"]
 SEEN_VERBS = vocab.TRANSLATE_VERBS + vocab.ROTATE_VERBS + vocab.SCALE_UP_VERBS + vocab.SCALE_DOWN_VERBS
@@ -74,7 +74,7 @@ def main():
         predictions = {}  # model name -> (values, presence flags)
         for rep in REPS:
             model, mean, std = load_model(rep)
-            X = np.load(f"data/features/{split}_{rep}.npy")
+            X = load_features(split, rep)
             predictions[f"mlp_{rep}"] = predict(model, standardise(X, mean, std))
         if split != "geobench":
             predictions["oracle"] = (np.array([oracle(r) for r in rows]), presence)

@@ -8,10 +8,10 @@ from datasets import load_dataset
 
 from dyooptix.geom.warp import iou, warp
 from dyooptix.models.breakdown import SEEN_VERBS, load_model
-from dyooptix.models.mlp import REPS, predict, standardise
+from dyooptix.models.mlp import REPS, load_features, predict, standardise
 
 SIZE = 512
-SHOW_MODELS = ["hand", "minilm"]
+SHOW_MODELS = ["hand", "minilm", "hand+minilm"]
 COLUMNS = REPS + ["do_nothing"]
 RED, GREEN = (255, 0, 0), (0, 255, 0)
 
@@ -35,7 +35,7 @@ def main():
     preds = {}
     for rep in REPS:
         model, mean, std = load_model(rep)
-        X = np.load(f"data/features/geobench_{rep}.npy")
+        X = load_features("geobench", rep)
         preds[rep], _ = predict(model, standardise(X, mean, std))
 
     data = load_dataset("CIawevy/GeoBench", "2d", cache_dir="data/hf_cache")["data"]

@@ -160,3 +160,19 @@
 - app.py: instruction + optional image (default: generated test card with grid, arrow and "TOP") + choice of hand or MiniLM. Shows the edited image, presence probabilities, tx/ty in px, θ, scale and the 2×3 matrix.
 - Text is lowercased and stripped of end punctuation, as in training. Inputs standardised with the saved train mean/std. Only hand and MiniLM offered: TF-IDF's fitted vocabulary was not saved; CLIP was worst on GeoBench.
 - Testing it found two problems, fixed in generator v3 and the next app version: rotations above 39° were never trained ("rotate 90 degrees" failed), and explicit pixel amounts were scaled by the uploaded image's width instead of meaning real pixels.
+
+
+## 2026-10-17 · Pipeline v3: full re-run, 3 seeds, hand+MiniLM
+- run_all.ps1 runs pytest → build_splits → geobench → encode → baselines → mlp → breakdown → showcase and stops at the first failure.
+- v3 splits: train 4,424, val 553, test 553, unseen templates 1,468; 2 duplicates removed; TF-IDF now 2,233 columns (more distinct numbers).
+- mlp.py trains every representation with seeds 0, 1, 2 and reports mean ± std (outputs/mlp_summary.csv); the seed-0 model is used by breakdown, showcase and the demo. Seed 0 reproduces the earlier single run exactly.
+- New representation hand+minilm: the two saved feature files stacked side by side (35 + 384 = 419 inputs), same MLP. Added because each part has a measured weakness: hand is blind to unseen words, MiniLM is imprecise with numbers.
+- Constant val corner 204 px (edits are larger in v3). Ridge val: hand 94, clip 111, minilm 113, tfidf 116.
+- MLP corner (mean ± std), test / GeoBench: hand 44.8 ± 0.6 / 88.4 ± 1.1; hand+minilm 49.9 ± 1.1 / 77.9 ± 1.8; minilm 69.4 ± 2.1 / 110.3 ± 7.9; clip 70.2 ± 1.0 / 151.9 ± 16.2; tfidf 113.4 ± 2.4 / 108.1 ± 2.9. Oracle test 23.2.
+- Hand is best on our vocabulary; hand+minilm is best on unseen vocabulary. Both gaps are several std wide.
+- GeoBench presence on unseen verbs: hand 0.088, minilm 0.383, hand+minilm 0.679, better than either part. Overall presence 0.881 ± 0.035; IoU 0.555 (hand 0.536, do nothing 0.457).
+- Explicit numbers (test, seed 0): hand 6.6, hand+minilm 28.9, minilm 50.1, clip 69.7. With 5–180° and 20–300 px, embeddings read numbers only roughly; in the concatenation the 3 exact-number columns are under-used (hypothesis).
+- GeoBench translation: hand+minilm detects far more translations (0.974 vs 0.593) but unseen direction words make many go the wrong way: IoU 0.325 vs do nothing 0.333 (hand 0.360).
+- Combined edits still the main gap (hand 97.5, hand+minilm 102.7, oracle 36.0). Single edits with hand near the floor (unseen templates 22.5 vs 19.6).
+- Out-of-distribution instability: GeoBench std clip 16.2, minilm 7.9, hand 1.1. TF-IDF unstable even on val (std 6.7; stops at epoch 20–30).
+- Demo default will be hand+minilm (failing slightly on numbers is less harmful live than doing nothing on an unseen verb); hand and minilm stay selectable.
