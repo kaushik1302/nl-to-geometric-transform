@@ -185,3 +185,15 @@
 - Output box shows the text actually used (after cleaning), presence probabilities, tx/ty in px, θ, scale, image size and the 2×3 matrix.
 - `python app.py --share` gives a temporary public link for testing with others.
 - Manual testing agrees with the measured results: minilm handles new translation verbs better, hand handles explicit scale factors better; the combination gets most of both.
+
+
+## 2026-10-17 · Human-written test set
+- 100 instructions written by people, labelled by the writers (direction, and amount as a number or small/medium/large); 98 kept, 2 out of scope (absolute position; size change in pixels). 149 labelled edits: 53 translate, 44 rotate, 52 scale.
+- Label conventions: amounts with no stated size labelled medium (writers' rule); undefined units ("units", "cm", "inches") labelled none (presence and direction scored, amount not); percentages converted (e.g. reduce by 10% = x0.9, 50% of width = 256 px).
+- eval_human.py scores hand, minilm and hand+minilm once, on raw lowercased text: presence, direction (translate within 22.5°, rotate by sign after wrapping, scale by sign of log s), explicit error (median), level hit for vague amounts. Per-edit predictions in outputs/human_edits.csv.
+- All three presence flags right: hand 0.58, minilm 0.78, hand+minilm 0.78. Detection with MiniLM in the input 0.82–0.94 per edit type; hand alone 0.61–0.77.
+- Direction is the main failure: translate 0.42–0.45, rotate 0.48–0.57, scale 0.62–0.81 (hand+minilm best on scale).
+- Translation by labelled direction (hand): up 1.00, down 0.73, left 0.23, right 0.08. Training says "to the left/right"; people write bare "left/right", "rightwards". Diagonals have only 1–2 sentences each.
+- Rotation: 26 of 44 human rotations say left/right/other instead of a clockwise word. Direction accuracy with clockwise words 0.83–0.89, without 0.19–0.38. The failure is vocabulary coverage, not model capacity.
+- Explicit scale median error |log s| 0.30–0.41: people use %, "times", twice/double/half, which are not in training. Explicit rotation median error 41–47°, mostly from wrong direction, plus numbers without "degrees", 270° and radians.
+- The set was scored once and is not used to change the model. Novelty plan: add left/right rotation, bare and "-wards" directions, %, times, twice/half to the generator, and evaluate on a fresh human set from different writers.

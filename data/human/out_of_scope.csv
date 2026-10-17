@@ -1,0 +1,3 @@
+instruction,reason
+Push it to the bottom right corner,absolute position (to the corner): needs the object's location
+Increase size by 200 pixels,a size change in pixels is undefined (width? height? area?)

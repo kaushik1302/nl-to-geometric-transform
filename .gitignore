@@ -1,7 +1,6 @@
 ﻿.venv/
 __pycache__/
 *.pyc
-/data/
 /outputs/*
 !/outputs/.gitkeep
 *.npy
@@ -12,3 +11,4 @@ __pycache__/
 /refs/
 /data/*
 !/data/human/
+/.gradio/

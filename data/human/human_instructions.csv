@@ -1,0 +1,99 @@
+category,instruction,translate_dir,translate_amount,rotate_dir,rotate_amount,scale_dir,scale_amount,note
+translate,Move it to right by 20 px,right,20,,,,,
+translate,Translate it moderately to left,left,medium,,,,,
+translate,Shift it left by 10 units,left,none,,,,,"'units' is not a defined length for an image: direction scored, amount not"
+translate,Move it up by 15,up,15,,,,,no unit written; labelled as pixels (writer's intent)
+translate,Move it down slightly,down,small,,,,,
+translate,Shift the image to the right a lot,right,large,,,,,
+translate,Nudge it up a tiny bit,up,small,,,,,
+translate,Move downwards by 100 pixels,down,100,,,,,
+translate,Translate leftwards by 50%,left,256,,,,,50% of image width = 256 px at 512 width
+translate,Drag it diagonally up and right,up-right,medium,,,,,no amount stated: labelled medium (writers' rule for unstated amounts)
+translate,Move vertically up by 200px,up,200,,,,,
+translate,Slide it up significantly,up,large,,,,,
+translate,Move it horizontally left by 5cm,left,none,,,,,"cm depends on screen/print size: direction scored, amount not"
+translate,Displace it downwards slightly,down,small,,,,,
+translate,Shift right by 2 inches,right,none,,,,,"inches depend on screen/print size: direction scored, amount not"
+translate,Reposition to the left heavily,left,large,,,,,
+translate,Drop it down a little,down,small,,,,,
+translate,Nudge rightwards by 5 units,right,none,,,,,"'units' is not a defined length: direction scored, amount not"
+translate,Move it left by a huge margin,left,large,,,,,
+rotate,Rotate the image anticlockwise by 35 degrees,,,ccw,35,,,label corrected to ccw (writer confirmed slip)
+rotate,Rotate the image clockwise,,,cw,medium,,,no amount stated: labelled medium (writers' rule for unstated amounts)
+rotate,revolve the image anticlockwise by 10 degrees,,,ccw,10,,,
+rotate,Spin it 90 degrees to the right,,,cw,90,,,
+rotate,Rotate counter-clockwise slightly,,,ccw,small,,,
+rotate,Turn it upside down,,,cw,180,,,
+rotate,Tilt it to the left a bit,,,ccw,small,,,
+rotate,Rotate clockwise by 45 deg,,,cw,45,,,
+rotate,Spin left by 30 degrees,,,ccw,30,,,
+rotate,Turn it right moderately,,,cw,medium,,,
+rotate,Rotate anti-clockwise significantly,,,ccw,large,,,
+rotate,Angle it clockwise by 15 degrees,,,cw,15,,,
+rotate,Twist it to the left a lot,,,ccw,large,,,
+rotate,Rotate right by 270 degrees,,,cw,270,,,beyond the trained 180 deg; same result as 90 ccw
+rotate,Spin it clockwise just a tiny bit,,,cw,small,,,
+rotate,Turn it counter-clockwise by 60 deg,,,ccw,60,,,
+rotate,Rotate rightward heavily,,,cw,large,,,
+rotate,Tilt right by 5 degrees,,,cw,5,,,
+rotate,Spin backwards by 120 degrees,,,ccw,120,,,'backwards' read as counter-clockwise (writer's intent)
+rotate,Rotate exactly 1 radian clockwise,,,cw,57.3,,,1 radian = 57.3 degrees; radians never seen in training
+scale,Enlarge the picture slightly,,,,,up,small,
+scale,Shrink the image to half its size,,,,,down,0.5,
+scale,Make it twice as big,,,,,up,2,
+scale,Scale down slightly,,,,,down,small,
+scale,Enlarge by 30%,,,,,up,1.3,30% bigger = x1.3
+scale,Reduce the size significantly,,,,,down,large,
+scale,Expand it to 1.5x,,,,,up,1.5,
+scale,Make it a tiny bit smaller,,,,,down,small,
+scale,Blow it up hugely,,,,,up,large,
+scale,Scale it to 75% of original,,,,,down,0.75,
+scale,Shrink it moderately,,,,,down,medium,
+scale,Magnify by 4 times,,,,,up,4,
+scale,Decrease size by a fraction,,,,,down,small,
+scale,Make it slightly larger,,,,,up,small,
+scale,Scale up to 300%,,,,,up,3,
+scale,Reduce by 10%,,,,,down,0.9,reduced BY 10% = x0.9
+scale,Expand it massively,,,,,up,large,
+scale,Make it just a little smaller,,,,,down,small,
+scale,Double the size,,,,,up,2,
+combined,"Scale it to 1.2 times, and rotate by huge amount clockwise",,,cw,large,up,1.2,
+combined,turn it clockwise in moderate amount and translate horizontally to right a little,right,small,cw,medium,,,
+combined,resize the image by 3x and move it to the left by huge amount,left,large,,,up,3,
+combined,Move up slightly and shrink to 80%,up,small,,,down,0.8,
+combined,Rotate left 45 degrees and enlarge 2x,,,ccw,45,up,2,
+combined,"Shift right 50px, spin clockwise 10 deg, make tiny",right,50,cw,10,down,small,writer: 'make tiny' means shrink a little (sheet's 'huge' was a slip)
+combined,Scale up by 20% and drag down a lot,down,large,,,up,1.2,
+combined,Turn upside down and move left 5 units,left,none,cw,180,,,'units' undefined: translate amount not scored
+combined,"Make it 3x bigger, move up-right, rotate 5 deg right",up-right,medium,cw,5,up,3,no translate amount stated: labelled medium (writers' rule)
+combined,Nudge down slightly and rotate anti-clockwise a bit,down,small,ccw,small,,,
+combined,"Shrink by half, move left 20px",left,20,,,down,0.5,
+combined,Expand 1.5x and tilt left 15 degrees,,,ccw,15,up,1.5,
+combined,Translate right moderately and reduce size slightly,right,medium,,,down,small,
+combined,"Spin 90 deg right, move up 100px, double size",up,100,cw,90,up,2,
+combined,"Move down-left significantly, scale to 10%",down-left,large,,,down,0.1,
+combined,Rotate 270 clockwise and shrink slightly,,,cw,270,down,small,beyond the trained 180 deg
+combined,"Enlarge heavily, shift up 10px",up,10,,,up,large,
+combined,"Move right a tiny bit, turn left 30 deg",right,small,ccw,30,,,
+combined,"Scale 4x, move down heavily, rotate right 45",down,large,cw,45,up,4,
+combined,"Shrink to 75%, shift left slightly",left,small,,,down,0.75,
+combined,"Rotate 180, expand 2x, move up 50px",up,50,cw,180,up,2,180 deg: either direction gives the same result
+combined,"Nudge right, shrink a lot",right,small,,,down,large,
+combined,"Turn clockwise 60 deg, move down 20 units",down,none,cw,60,,,'units' undefined: translate amount not scored
+combined,"Make 5x bigger, rotate left 90",,,ccw,90,up,5,x5 is beyond the trained x4
+combined,"Move up-left, scale down 20%",up-left,medium,,,down,0.8,no translate amount stated: labelled medium (writers' rule)
+combined,"Shift down 5cm, spin right 15 deg, enlarge slightly",down,none,cw,15,up,small,cm undefined: translate amount not scored
+combined,"Rotate counter-clockwise 120, move right 100px",right,100,ccw,120,,,
+combined,"Shrink to 10%, move up slightly",up,small,,,down,0.1,
+combined,"Scale 2.5x, move left a lot, turn right 5 deg",left,large,cw,5,up,2.5,
+combined,"Move down moderately, enlarge 3x",down,medium,,,up,3,
+combined,"Spin left 45, shrink 50%, move right 10px",right,10,ccw,45,down,0.5,
+combined,"Turn right 90, scale up 1.2x",,,cw,90,up,1.2,
+combined,"Move up heavily, shrink to 30%",up,large,,,down,0.3,
+combined,"Shift left 50 units, rotate right 180",left,none,cw,180,,,'units' undefined: translate amount not scored
+combined,"Enlarge 1.8x, move down-right slightly",down-right,small,,,up,1.8,
+combined,"Rotate left 10 deg, shrink slightly, move up 5px",up,5,ccw,10,down,small,
+combined,"Scale 10x, move right heavily",right,large,,,up,10,x10 is beyond the trained x4
+combined,"Turn clockwise 30, move down 15px, expand 1.5x",down,15,cw,30,up,1.5,
+combined,"Shrink 90%, move left slightly",left,small,,,down,0.1,writer: shrink BY 90% = x0.1 (beyond the trained x0.25)
+combined,"Move up 200px, rotate left 90, scale 2x",up,200,ccw,90,up,2,
