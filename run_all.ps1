@@ -10,7 +10,8 @@ $steps = @(
     "dyooptix.models.breakdown",      # per-group errors + noise-floor oracle
     "dyooptix.models.showcase"        # GeoBench IoU + qualitative grid
     "dyooptix.models.showcase",       # GeoBench IoU + qualitative grid
-    "dyooptix.models.eval_human"      # human-written test set
+    "dyooptix.models.eval_human",     # human-written test set
+    "dyooptix.models.make_figures"    # report figures
 )
 
 foreach ($step in $steps) {
