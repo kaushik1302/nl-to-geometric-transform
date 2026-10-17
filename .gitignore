@@ -12,3 +12,4 @@ __pycache__/
 /data/*
 !/data/human/
 /.gradio/
+!/outputs/mlp_*.pt
