@@ -197,3 +197,11 @@
 - Rotation: 26 of 44 human rotations say left/right/other instead of a clockwise word. Direction accuracy with clockwise words 0.83–0.89, without 0.19–0.38. The failure is vocabulary coverage, not model capacity.
 - Explicit scale median error |log s| 0.30–0.41: people use %, "times", twice/double/half, which are not in training. Explicit rotation median error 41–47°, mostly from wrong direction, plus numbers without "degrees", 270° and radians.
 - The set was scored once and is not used to change the model. Novelty plan: add left/right rotation, bare and "-wards" directions, %, times, twice/half to the generator, and evaluate on a fresh human set from different writers.
+
+
+## 2026-10-18 · Stage 1 code freeze
+- make_figures.py draws four report figures from the saved results: representations (mean ± std, constant, oracle), ridge vs MLP, error by level vs oracle, human-set direction accuracy by phrasing. Added to run_all.ps1.
+- Trained seed-0 models committed (outputs/mlp_*.pt, 0.3–2.6 MB) so the demo runs from a fresh clone without training.
+- README: setup (CPU PyTorch index), demo, one-command reproduction, results table, limitations, layout, conventions.
+- Fresh-clone test passed: new folder, new venv, install from requirements, pip install -e ., app starts with the committed models.
+- Code frozen for Stage 1 and tagged stage1.
