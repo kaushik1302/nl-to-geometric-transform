@@ -129,8 +129,3 @@ def generate(n, seed, path):
     with open(path, "w", encoding="utf-8") as f:
         for _ in range(n):
             f.write(json.dumps(make_example(rng)) + "\n")
-
-
-if __name__ == "__main__":
-    generate(n=5000, seed=42, path="data/dataset_v2.jsonl")
-    print("wrote 5000 examples to data/dataset_v2.jsonl")
