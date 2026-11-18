@@ -217,3 +217,13 @@
 - Old human set (development only: v4 was designed from its failures): all three presence flags right, hand+minilm 0.78 → 0.90; direction translate → 0.72, rotate → 0.84, scale → 0.83; explicit rotation median error 41–47° → 15° (hand). To be confirmed on the fresh human set.
 - Synthetic test errors are not comparable with v3 (different generator; oracle floor 23.2 → 25.4).
 - Explicit translate error on human set still large (median 45–61 px, n = 15): target for number fusion.
+
+
+## 2026-11-19 · Clause splitting (inference only)
+- split.py: split_clauses cuts at and / then / and then / commas / semicolons; "up and right", "up and to the left" are protected as one diagonal direction. merge adds tx, ty, angles and log s over the clauses: exact, because rotation and scale act about the object's own centre (t = t1 + t2, θ = θ1 + θ2, s = s1·s2, any order). No retraining: the v4 models are used as they are.
+- tests/test_split.py: joiners, diagonal protection, merge of moves/angles/log scales, one clause unchanged. 14 tests pass.
+- eval_split.py: whole vs split with the same models and features; added to run_all.ps1 (and the missing comma after the showcase step fixed).
+- Synthetic test, combined sentences, corner error whole → split: hand 106.7 → 45.4 (oracle floor 40.4), hand+minilm 103.8 → 55.4, minilm 155.4 → 72.7. Single-edit sentences, unseen templates and GeoBench identical in both modes.
+- Old human set, multi-edit sentences (development only), hand+minilm whole → split: all presence flags right 0.775 → 0.975; direction rotate 0.833 → 0.958, scale 0.788 → 0.970, translate 0.588 → 0.765. Explicit median error: rotate 25.9° → 11.2°, scale 0.197 → 0.156.
+- Known limits: "rotate and shrink it" gives a first clause with no direction or amount; explicit translate error still 35–37 px (target for number fusion).
+- Demo: hand+minilm chosen automatically (best or tied on presence, direction and GeoBench); representation selector and split checkbox moved to a collapsed "Advanced (for comparison)" panel; clauses shown in the output; three-clause example added.

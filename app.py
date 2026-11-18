@@ -16,8 +16,9 @@ from dyooptix.models.breakdown import load_model
 from dyooptix.models.encode import hand_features
 from dyooptix.models.metrics import to_params
 from dyooptix.models.mlp import predict, standardise
+from dyooptix.models.split import merge, split_clauses
 
-REPS = ["hand+minilm", "hand", "minilm"]   # the first one is the default
+REPS = ["hand+minilm", "hand", "minilm"]   # the first one is the default (used automatically)
 EDITS = ["translate", "rotate", "scale"]
 REFERENCE_WIDTH = 512                      # explicit pixels in training refer to a 512-wide image
 PIXELS = re.compile(r"\d\s*(?:pixels|px)\b")
@@ -63,7 +64,7 @@ def encode(sentence, rep):
     return np.hstack(parts)
 
 
-def edit(instruction, image, rep):
+def edit(instruction, image, rep=REPS[0], use_split=True):
     if image is None:
         image = sample_image()
     sentence = normalise(instruction.lower().strip().rstrip(".!?"))
@@ -71,12 +72,13 @@ def edit(instruction, image, rep):
         return image, "Type an instruction."
 
     model, mean, std = MODELS[rep]
-    x = standardise(encode(sentence, rep), mean, std)
-    pred, _ = predict(model, x)                        # gated [tx, ty, cos, sin, log s]
+    clauses = (split_clauses(sentence) or [sentence]) if use_split else [sentence]
+    x = standardise(np.vstack([encode(c, rep) for c in clauses]), mean, std)
+    pred, _ = predict(model, x)                        # gated [tx, ty, cos, sin, log s], one row per clause
     with torch.no_grad():
-        probs = torch.sigmoid(model(x)[0])[0].numpy()  # presence probabilities, for display
+        probs = torch.sigmoid(model(x)[0]).max(dim=0).values.numpy()  # per edit: highest over clauses
 
-    target = pred[0].copy()
+    target = merge(pred)                               # one clause: unchanged
     h, w = image.shape[:2]
     explicit_px = bool(PIXELS.search(sentence))
     if explicit_px:
@@ -88,7 +90,10 @@ def edit(instruction, image, rep):
     angle = np.degrees(np.arctan2(p["sin"], p["cos"]))
     M = build_affine(p, (w / 2, h / 2), w)
 
-    lines = [f"Model: {rep}", f"Text used: {sentence}", "Detected edits (probability):"]
+    lines = [f"Model: {rep}", f"Text used: {sentence}"]
+    if len(clauses) > 1:
+        lines.append("Clauses: " + " | ".join(clauses))
+    lines.append("Detected edits (probability):")
     lines += [f"  {name:9}  {prob:.2f}  {'✓' if prob > 0.5 else ''}" for name, prob in zip(EDITS, probs)]
     lines += [f"Translation: tx = {p['tx'] * w:+.0f} px, ty = {p['ty'] * w:+.0f} px   (+x right, +y down)"
               + ("   [explicit pixels: real pixels of this image]" if explicit_px else ""),
@@ -105,22 +110,28 @@ demo = gr.Interface(
     inputs=[
         gr.Textbox(label="Edit instruction", placeholder="e.g. rotate it 90 degrees clockwise and shrink it to 0.7x"),
         gr.Image(type="numpy", label="Image (leave empty to use the test card)"),
-        gr.Radio(REPS, value=REPS[0], label="Text representation"),
     ],
-    outputs=[gr.Image(label="Edited image"), gr.Textbox(label="Predicted parameters", lines=13)],
+    additional_inputs=[                                  # hidden in a collapsed panel; defaults are used otherwise
+        gr.Radio(REPS, value=REPS[0], label="Text representation"),
+        gr.Checkbox(value=True, label="Split into clauses (and / then / commas)"),
+    ],
+    additional_inputs_accordion=gr.Accordion("Advanced (for comparison)", open=False),
+    outputs=[gr.Image(label="Edited image"), gr.Textbox(label="Predicted parameters", lines=14)],
     examples=[
-        ["rotate the image by 90 degrees clockwise", None, "hand+minilm"],
-        ["move it 100 px to the right", None, "hand"],
-        ["scale it to 0.5x", None, "hand+minilm"],
-        ["shrink it to 0.7x and turn it slightly counter-clockwise", None, "hand+minilm"],
-        ["move it slightly to the left and enlarge it a lot", None, "hand"],
-        ["drag the box upward mildly", None, "hand+minilm"],
+        ["rotate the image by 90 degrees clockwise", None, "hand+minilm", True],
+        ["move it 100 px to the right", None, "hand+minilm", True],
+        ["scale it to 0.5x", None, "hand+minilm", True],
+        ["shrink it to 0.7x and turn it slightly counter-clockwise", None, "hand+minilm", True],
+        ["move it slightly to the left and enlarge it a lot", None, "hand+minilm", True],
+        ["drag the box upward mildly", None, "hand+minilm", True],
+        ["move it right by 100 px, then rotate it 30 degrees clockwise and make it twice as big", None, "hand+minilm", True],
     ],
     title="DyoOptix: natural-language geometric edits",
-    description="Type an edit instruction. The model predicts translation, rotation and scale, "
-                "and applies them to the whole image about its centre. "
-                "hand+minilm is the default; hand is most precise with known words and exact numbers; "
-                "minilm copes best with new wording on its own.",
+    description="Type an edit instruction and optionally upload an image. The model predicts translation, "
+                "rotation and scale and applies them to the whole image about its centre. "
+                "Combined instructions are split into clauses, each predicted separately and then added up. "
+                "The best overall model (hand features + MiniLM) is used automatically; "
+                "Advanced lets you compare other text representations and turn splitting off.",
 )
 
 if __name__ == "__main__":

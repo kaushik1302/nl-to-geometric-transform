@@ -8,8 +8,9 @@ $steps = @(
     "dyooptix.models.baselines",      # constant + ridge
     "dyooptix.models.mlp",            # gated MLP, 3 seeds
     "dyooptix.models.breakdown",      # per-group errors + noise-floor oracle
-    "dyooptix.models.showcase"        # GeoBench IoU + qualitative grid
+    "dyooptix.models.showcase",       # GeoBench IoU + qualitative grid
     "dyooptix.models.eval_human",     # human-written test set
+    "dyooptix.models.eval_split",     # whole sentence vs clause splitting
     "dyooptix.models.make_figures"    # report figures
 )
 
