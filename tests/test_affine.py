@@ -54,3 +54,10 @@ def test_matches_opencv():
     for deg, s, c in cases:
         M = build_affine(make_params(deg=deg, s=s), centroid=c, width=256)
         assert np.allclose(M, cv2.getRotationMatrix2D(c, deg, s))
+
+def test_centre_moves_by_translation():
+    # Rotation and scale act about the centre, so the centre moves only by t.
+    # Width 256: tx = 0.1 → 25.6 px right; ty = −0.05 → 12.8 px up.
+    c = (120, 45)
+    M = build_affine(make_params(tx=0.1, ty=-0.05, deg=-37, s=1.8), centroid=c, width=256)
+    assert np.allclose(apply(M, c), [120 + 25.6, 45 - 12.8])
