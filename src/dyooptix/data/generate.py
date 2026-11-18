@@ -1,9 +1,11 @@
 """Generate the synthetic instruction dataset.
 
-Version 3: four equally likely categories — translate only, rotate only,
+Version 4: four equally likely categories — translate only, rotate only,
 scale only, and combined (2 or 3 edits) — with vague or explicit amounts.
-v3 adds wider explicit ranges, several number formats (px, °, 2x), and
+v3 added wider explicit ranges, several number formats (px, °, 2x), and
 neutral scale verbs (scale/resize) whose factor gives the direction.
+v4 adds bare and "-wards" translate directions, left/right rotation,
+percentages, "times", and factor clauses (double / twice / half / halve).
 """
 import json
 import math
@@ -24,11 +26,16 @@ def pick_amount(kind, rng):
         if kind == "scale":
             return None, None, "explicit"     # decided in explicit_scale(): it needs the direction first
         low, high = EXPLICIT_RANGES[kind]
-        phrase = rng.choice(vocab.EXPLICIT_PHRASES[kind])
         if kind == "translate":
             pixels = rng.randint(low, high)
+            if rng.random() < 1 / 3:          # v4: the same size written as a % of width
+                pct = round(100 * pixels / REFERENCE_WIDTH)
+                phrase = rng.choice(vocab.PERCENT_PHRASES["translate"])
+                return pct / 100, phrase.format(n=pct), "explicit"
+            phrase = rng.choice(vocab.EXPLICIT_PHRASES["translate"])
             return pixels / REFERENCE_WIDTH, phrase.format(n=pixels), "explicit"
         degrees = rng.randint(low, high)
+        phrase = rng.choice(vocab.EXPLICIT_PHRASES["rotate"])
         return degrees, phrase.format(n=degrees), "explicit"
 
     level = rng.choice(list(vocab.ADVERBS))
@@ -36,19 +43,33 @@ def pick_amount(kind, rng):
 
 
 def explicit_scale(rng, target):
-    """Explicit scale in one of three forms. Writes target[4]; returns (verb, phrase)."""
+    """Explicit scale in one of five forms. Writes target[4]; returns (verb, phrase)."""
     low, high = EXPLICIT_RANGES["scale"]
-    form = rng.choice(["bigger", "smaller_result", "smaller_divisor"])
+    form = rng.choice(["bigger", "smaller_result", "smaller_divisor", "percent", "factor"])
     if form == "bigger":                      # "enlarge it by 2.5x", "scale it to 3x"
         n = round(rng.uniform(low, high), 1)
         target[4] = math.log(n)
         verbs = vocab.SCALE_UP_VERBS + vocab.SCALE_NEUTRAL_VERBS
-        phrase = rng.choice(["by a factor of {n}", "by {n}x", "to {n}x"])
+        phrase = rng.choice(["by a factor of {n}", "by {n}x", "to {n}x"] + vocab.TIMES_PHRASES)
     elif form == "smaller_result":            # "shrink it to 0.7x", "resize it by 0.75x"
         n = round(rng.uniform(1 / high, 1 / low), 2)
         target[4] = math.log(n)
         verbs = vocab.SCALE_DOWN_VERBS + vocab.SCALE_NEUTRAL_VERBS
         phrase = rng.choice(["to {n}x", "by {n}x"])
+    elif form == "percent":                   # v4: "enlarge it by 20%" = x1.2, "reduce it by 10%" = x0.9
+        phrase = rng.choice(vocab.PERCENT_PHRASES["scale"])
+        if rng.random() < 0.5:
+            n = rng.randint(10, 300)
+            target[4] = math.log(1 + n / 100)
+            verbs = vocab.SCALE_UP_VERBS
+        else:
+            n = rng.randint(10, 75)
+            target[4] = math.log(1 - n / 100)
+            verbs = vocab.SCALE_DOWN_VERBS
+    elif form == "factor":                    # v4: "double it", "make it half the size"
+        factor = rng.choice(list(vocab.FACTOR_CLAUSES))
+        target[4] = math.log(factor)
+        return None, rng.choice(vocab.FACTOR_CLAUSES[factor])   # None: the clause is complete
     else:                                     # "shrink it by a factor of 2": shrink verbs only
         n = round(rng.uniform(low, high), 1)
         target[4] = -math.log(n)
@@ -60,8 +81,8 @@ def explicit_scale(rng, target):
 def add_edit(kind, size, amount, level, rng, target):
     """Which way? Writes this edit's numbers into target; returns (verb, direction, amount)."""
     if kind == "translate":
-        direction = rng.choice(list(vocab.TRANSLATE_DIRECTIONS))
-        dx, dy = vocab.TRANSLATE_DIRECTIONS[direction]
+        dx, dy = rng.choice(list(vocab.TRANSLATE_PHRASES))       # direction first, evenly
+        direction = rng.choice(vocab.TRANSLATE_PHRASES[(dx, dy)])  # then one of its phrases
         target[0] = size * dx
         target[1] = size * dy
         return rng.choice(vocab.TRANSLATE_VERBS), direction, amount
@@ -105,6 +126,9 @@ def make_example(rng):
         levels.append(level)
 
         obj = rng.choice(vocab.OBJECTS) if i == 0 else "it"
+        if verb is None:                      # v4: a whole factor clause, no template
+            clauses.append(amount.format(obj=obj)) # type: ignore
+            continue
         if category == "combined":
             pattern = rng.choice(vocab.CLAUSE_TEMPLATES[kind])
         else:

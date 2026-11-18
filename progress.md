@@ -205,3 +205,15 @@
 - README: setup (CPU PyTorch index), demo, one-command reproduction, results table, limitations, layout, conventions.
 - Fresh-clone test passed: new folder, new venv, install from requirements, pip install -e ., app starts with the committed models.
 - Code frozen for Stage 1 and tagged stage1.
+
+
+## 2026-11-18 · Generator v4: vocabulary and format coverage
+- vocab.py: translate directions grouped by vector (TRANSLATE_PHRASES) so all 8 directions stay equally likely; added bare left/right, leftwards/rightwards/upwards/downwards. Rotation: left = counter-clockwise, right = clockwise; added counterclockwise, anti-clockwise. New formats: % (translate = fraction of width; scale = ×(1 ± n/100) by verb), "times" for enlarging, factor clauses (double / twice / half / halve).
+- generate.py: a third of explicit translations written as %; two new explicit scale forms (percent, factor clause); factor clauses keep template_id −1. GeoBench words still not used.
+- encode.py: keyword list de-duplicated (left/right serve translate and rotate); factor-word flags; "times" read as a factor; new percent column. Hand features 35 → 48 columns (44 flags + 4 numbers).
+- tests/test_generate.py: left/right signs for rotate and translate; % translate equals n/100 of width. 10 tests pass.
+- v4 splits: train 4,470, val 559, test 559, unseen templates 1,369; 43 duplicates removed (mostly repeated factor clauses); 88 test sentences also in train.
+- GeoBench corner error (v3 → v4): hand 88.4 → 81.4, hand+minilm 77.9 → 78.0, minilm 110.3 → 105.8, tfidf 108.1 → 92.6, clip 151.9 → 139.1.
+- Old human set (development only: v4 was designed from its failures): all three presence flags right, hand+minilm 0.78 → 0.90; direction translate → 0.72, rotate → 0.84, scale → 0.83; explicit rotation median error 41–47° → 15° (hand). To be confirmed on the fresh human set.
+- Synthetic test errors are not comparable with v3 (different generator; oracle floor 23.2 → 25.4).
+- Explicit translate error on human set still large (median 45–61 px, n = 15): target for number fusion.
