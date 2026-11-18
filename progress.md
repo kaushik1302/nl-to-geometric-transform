@@ -227,3 +227,12 @@
 - Old human set, multi-edit sentences (development only), hand+minilm whole → split: all presence flags right 0.775 → 0.975; direction rotate 0.833 → 0.958, scale 0.788 → 0.970, translate 0.588 → 0.765. Explicit median error: rotate 25.9° → 11.2°, scale 0.197 → 0.156.
 - Known limits: "rotate and shrink it" gives a first clause with no direction or amount; explicit translate error still 35–37 px (target for number fusion).
 - Demo: hand+minilm chosen automatically (best or tied on presence, direction and GeoBench); representation selector and split checkbox moved to a collapsed "Advanced (for comparison)" panel; clauses shown in the output; three-clause example added.
+
+
+## 2026-11-19 · Number-preserving fusion (inference only)
+- New `models/numbers.py`: `fix_numbers(clause, pred, present)` replaces only the *magnitude* of a clause's prediction with the exact number in the text (deg/rad, px, %, x/times/factor, half/double/twice); the network keeps edit type and sign. Runs per clause before the clauses are added up.
+- Rules: "to n%" = n/100, "by n%" = 1±n/100; any angle wrapped into (−180°, 180°]; rotation with no direction word defaults to counter-clockwise; a unit-less number is px for moves and degrees for rotation; diagonal moves snap to the nearest of 8 directions and the number is the total length; a "%" goes to scale if the clause has a scale word, otherwise to translation.
+- No retraining. eval_split now compares whole / split / split+numbers; edit rows record sentence and amount.
+- Results, hand+minilm, synthetic corner error (px): test combined 103.8 → 55.4 → 43.3; test single 30.0 → 30.0 → 20.4; unseen templates 33.2 → 33.2 → 24.4; GeoBench unchanged at 76.4 (no numbers or combined edits there).
+- Human set (development only), hand+minilm, explicit amounts: translate mean error 0.0 px (15 edits), scale 0.000 (35), rotate exact except two sentences. Direction accuracy: rotate 0.85 → 0.95 (single), 0.96 → 1.00 (multi); scale 0.895 → 0.947 and 0.97 → 1.00.
+- Known failure: word-only angles ("turn it upside down" = 180°) are outside the training vocabulary. Limitations: "move it to 100 px" is read as a relative move; "half" as ×0.5 even for "enlarge by half".

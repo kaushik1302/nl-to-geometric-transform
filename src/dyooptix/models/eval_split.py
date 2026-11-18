@@ -1,4 +1,4 @@
-"""Whole sentence vs clause splitting, with the same trained models (inference only)."""
+"""Whole sentence vs clause splitting vs splitting + exact numbers, with the same trained models (inference only)."""
 import json
 
 import numpy as np
@@ -8,19 +8,22 @@ from dyooptix.models.breakdown import load_model
 from dyooptix.models.eval_human import KINDS, REPS, check, encode, score_edit
 from dyooptix.models.metrics import corner_error
 from dyooptix.models.mlp import predict, standardise
+from dyooptix.models.numbers import fix_numbers
 from dyooptix.models.split import merge, split_clauses
 
 SPLITS = ["test", "test_unseen_templates", "geobench"]
-MODES = ["whole", "split"]
+MODES = ["whole", "split", "split+numbers"]
 
 
-def predict_all(model, mean, std, sentences, rep, use_split):
-    """Predictions for many sentences. With use_split, all clauses are encoded in one batch."""
-    if not use_split:
+def predict_all(model, mean, std, sentences, rep, mode):
+    """Predictions for many sentences. 'split' encodes all clauses in one batch; 'split+numbers' also fixes exact numbers."""
+    if mode == "whole":
         return predict(model, standardise(encode(sentences, rep), mean, std))
     clauses = [split_clauses(s) or [s] for s in sentences]
     flat = [c for cs in clauses for c in cs]
     pred, present = predict(model, standardise(encode(flat, rep), mean, std))
+    if mode == "split+numbers":              # exact number per clause, before the clauses are added up
+        pred = np.array([fix_numbers(c, p, r.astype(bool)) for c, p, r in zip(flat, pred, present)])
     preds, presents, i = [], [], 0
     for cs in clauses:                       # regroup the clause rows sentence by sentence
         n = len(cs)
@@ -41,7 +44,7 @@ def synthetic():
         for rep in REPS:
             model, mean, std = load_model(rep)
             for mode in MODES:
-                pred, _ = predict_all(model, mean, std, sentences, rep, mode == "split")
+                pred, _ = predict_all(model, mean, std, sentences, rep, mode)
                 for group, keep in [("all", np.ones(len(rows), bool)), ("combined", combined), ("single", ~combined)]:
                     if keep.any():
                         out.append({"split": split, "group": group, "n": int(keep.sum()), "model": rep,
@@ -60,7 +63,7 @@ def human():
     for rep in REPS:
         model, mean, std = load_model(rep)
         for mode in MODES:
-            pred, present = predict_all(model, mean, std, sentences, rep, mode == "split")
+            pred, present = predict_all(model, mean, std, sentences, rep, mode)
             for i, r in df.iterrows():
                 sentence_rows.append({"model": rep, "mode": mode, "multi": multi[i],
                                       "presence_ok": bool((present[i] == truth[i]).all())}) # type: ignore
@@ -68,6 +71,7 @@ def human():
                     if r[f"{kind}_dir"]:
                         s = score_edit(kind, r[f"{kind}_dir"], r[f"{kind}_amount"], pred[i], bool(present[i][k])) # type: ignore
                         edit_rows.append({"model": rep, "mode": mode, "multi": multi[i], "kind": kind,
+                                          "sentence": sentences[i], "amount": r[f"{kind}_amount"], # type: ignore
                                           "direction_ok": s["direction_ok"], "error": s.get("error", np.nan)})
     return pd.DataFrame(sentence_rows), pd.DataFrame(edit_rows)
 
@@ -76,7 +80,7 @@ def main():
     pd.set_option("display.width", 200)
     syn = synthetic()
     syn.to_csv("outputs/split_synthetic.csv", index=False)
-    print("Corner error (px), whole vs split:")
+    print("Corner error (px), whole vs split vs split+numbers:")
     print(syn.pivot_table(index=["split", "group", "n"], columns=["model", "mode"], values="corner_px").round(1))
 
     sentences, edits = human()

@@ -16,6 +16,7 @@ from dyooptix.models.breakdown import load_model
 from dyooptix.models.encode import hand_features
 from dyooptix.models.metrics import to_params
 from dyooptix.models.mlp import predict, standardise
+from dyooptix.models.numbers import fix_numbers
 from dyooptix.models.split import merge, split_clauses
 
 REPS = ["hand+minilm", "hand", "minilm"]   # the first one is the default (used automatically)
@@ -74,7 +75,8 @@ def edit(instruction, image, rep=REPS[0], use_split=True):
     model, mean, std = MODELS[rep]
     clauses = (split_clauses(sentence) or [sentence]) if use_split else [sentence]
     x = standardise(np.vstack([encode(c, rep) for c in clauses]), mean, std)
-    pred, _ = predict(model, x)                        # gated [tx, ty, cos, sin, log s], one row per clause
+    pred, present = predict(model, x)                  # gated [tx, ty, cos, sin, log s], one row per clause
+    pred = np.array([fix_numbers(c, p, r.astype(bool)) for c, p, r in zip(clauses, pred, present)])  # exact numbers
     with torch.no_grad():
         probs = torch.sigmoid(model(x)[0]).max(dim=0).values.numpy()  # per edit: highest over clauses
 
@@ -129,7 +131,8 @@ demo = gr.Interface(
     title="DyoOptix: natural-language geometric edits",
     description="Type an edit instruction and optionally upload an image. The model predicts translation, "
                 "rotation and scale and applies them to the whole image about its centre. "
-                "Combined instructions are split into clauses, each predicted separately and then added up. "
+                "Combined instructions are split into clauses, each predicted separately and then added up; "
+                "exact numbers in the text (degrees, pixels, percent, factors) are used as written. "
                 "The best overall model (hand features + MiniLM) is used automatically; "
                 "Advanced lets you compare other text representations and turn splitting off.",
 )
