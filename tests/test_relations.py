@@ -33,3 +33,13 @@ def test_object_names():
     assert name("give the toaster a little push left") == "toaster"
     assert name("rotate the image 90 degrees") is None
     assert name("move it left") is None
+
+
+def test_edge_words_and_sides():
+    r = parse("move the mug until it touches the left end")
+    assert (r["kind"], r["mover"], r["side"]) == ("edge", "mug", "left")
+    assert parse("slide the mug right until it reaches the right end of the picture")["side"] == "right"
+    r = parse("push it up until it hits the upper border")
+    assert (r["kind"], r["mover"], r["side"], r["has_direction"]) == ("edge", None, "top", True)
+    r = parse("move the mug until it touches the edge")
+    assert (r["kind"], r["side"], r["has_direction"]) == ("edge", None, False)

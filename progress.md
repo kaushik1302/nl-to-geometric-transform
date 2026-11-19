@@ -279,3 +279,9 @@
 - New `data/shapes.py`: 48 images (512 px, red circle, blue square, fixed seed 643): 16 "move the circle right/left/up/down until it touches/reaches/hits the square" (4 meeting the square's corner), 8 without a direction word, 16 "beside / next to / near / alongside / close to" (nearest side), 8 "to the left/right of" (named side, sometimes the far side).
 - Expected translation from exact circle–rectangle geometry, written independently of contact.py. Cross-check with true masks and the correct direction: contact.py agrees within 0.86 px (mean 0.09 px).
 - Output in data/shapes (git-ignored; rebuild with `python -m dyooptix.data.shapes`).
+
+
+## 2026-11-20 · Touching the photo's edge
+- `relations.parse`: "until it touches/reaches/hits the edge / end / border / boundary / side", optionally with left / right / top (upper) / bottom (lower) → kind "edge".
+- `contact.to_edge(mask, side, d)`: named side → that border; a direction word only → the first border reached along it; neither → the nearest border. A named side wins over a direction word.
+- Shape test set extended to 56 images with 8 edge cases (4 named edges, 2 direction-only, 2 nearest); expected moves exact. 54 tests in total.

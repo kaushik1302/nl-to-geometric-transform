@@ -1,6 +1,6 @@
 import numpy as np
 
-from dyooptix.geom.contact import beside, relation_shift, touch
+from dyooptix.geom.contact import beside, relation_shift, to_edge, touch
 
 
 def rect(x0, y0, x1, y1, size=200):
@@ -43,6 +43,7 @@ def test_who_moves_matters():
     assert beside(a, b) != beside(b, a)                            # bottle beside mug is not mug beside bottle
     assert beside(b, a) == (-68, -20)
 
+
 def test_relation_uses_the_model_direction_snapped():
     rel = {"kind": "touch", "mover": "circle", "target": "square", "side": None, "rest": "move the circle right",
            "has_direction": True}
@@ -59,3 +60,11 @@ def test_relation_wrong_way_or_no_move_explains_why():
             assert False
         except ValueError as error:
             assert "square" in str(error) or "direction" in str(error)
+
+
+def test_edge_named_side_direction_and_nearest():
+    m = rect(10, 40, 29, 59)                                       # room: left 10, right 170, top 40, bottom 140
+    assert to_edge(m, "right") == (170, 0) and to_edge(m, "top") == (0, -40)
+    assert to_edge(m) == (-10, 0)                                  # nearest edge: left
+    tx, ty = to_edge(m, d=(1, 1))                                  # diagonal: reaches the bottom first
+    assert np.isclose(tx, 140) and np.isclose(ty, 140)

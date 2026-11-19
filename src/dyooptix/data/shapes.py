@@ -95,6 +95,24 @@ def beside_case(rng, side):
             return circle, square, (tx, ty), end
 
 
+def edge_case(rng, mode):
+    """mode: a side name ("left"...), "direction" (a direction word, no side) or "nearest" (neither)."""
+    while True:
+        r, w = rng.randint(25, 55), rng.randint(50, 110)
+        circle = (rng.randint(r, SIZE - r - 1), rng.randint(r, SIZE - r - 1), r)
+        x0, y0 = rng.randint(0, SIZE - w), rng.randint(0, SIZE - w)
+        square = (x0, y0, x0 + w - 1, y0 + w - 1)
+        cx, cy, r = circle
+        room = {"left": cx - r, "right": SIZE - 1 - (cx + r), "up": cy - r, "down": SIZE - 1 - (cy + r)}
+        ranked = sorted(room, key=room.get)
+        if mode == "nearest" and room[ranked[1]] - room[ranked[0]] < 10:
+            continue                                               # nearest edge must be clear-cut
+        way = ranked[0] if mode == "nearest" else (rng.choice(list(AXES)) if mode == "direction" else mode)
+        dx, dy = AXES[way]
+        if apart(circle, square) and room[way] > 20:
+            return circle, square, (dx * room[way], dy * room[way]), way
+
+
 def draw(circle, square):
     image = np.full((SIZE, SIZE, 3), 255, np.uint8)
     cx, cy, r = circle
@@ -114,7 +132,9 @@ def build(seed=643):
     plan = ([("touch_dir", d, i % 3 == 2) for d in AXES for i in range(4)]        # 16, one per direction meets a corner
             + [("touch_nodir", d, False) for d in AXES for _ in range(2)]        # 8
             + [("beside", None, False)] * 16                                     # 16, nearest side
-            + [("side", s, False) for s in ("left", "right") for _ in range(4)]) # 8, named side
+            + [("side", s, False) for s in ("left", "right") for _ in range(4)]  # 8, named side
+            + [("edge", m, False) for m in ("left", "right", "up", "down", "direction", "direction",
+                                            "nearest", "nearest")])               # 8, the photo's border
     for kind, arg, corner in plan:
         if kind.startswith("touch"):
             circle, square, (tx, ty) = touch_case(rng, arg, kind == "touch_dir", corner)
@@ -126,6 +146,18 @@ def build(seed=643):
             circle, square, (tx, ty), end = beside_case(rng, None)
             sentence = f"{rng.choice(['put', 'move', 'place'])} the circle {rng.choice(BESIDE_WORDS)} the square"
             note = end
+        elif kind == "edge":
+            circle, square, (tx, ty), way = edge_case(rng, arg)
+            edge = rng.choice(["edge", "end", "border"])
+            named = {"up": "top", "down": "bottom"}.get(way, way) # type: ignore
+            verb, word = rng.choice(TOUCH_VERBS), rng.choice(TOUCH_WORDS)
+            if arg == "direction":
+                sentence = f"{verb} the circle {way} until it {word} the {edge}"
+            elif arg == "nearest":
+                sentence = f"{verb} the circle until it {word} the {edge}"
+            else:
+                sentence = f"{verb} the circle until it {word} the {named} {edge}"
+            note = f"{arg}:{way}"
         else:
             circle, square, (tx, ty), end = beside_case(rng, arg)
             sentence = f"{rng.choice(['move', 'place'])} the circle to the {arg} of the square"

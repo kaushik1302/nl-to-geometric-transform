@@ -5,6 +5,8 @@ ART = r"(?:the |a |an |this |that |my )?"
 TOUCH = re.compile(r",?\s*until (?:it |they )?(?:touch|reach|hit|meet|contact)(?:es|s)?\s+" + ART + r"(?P<target>.+)$")
 SIDE = re.compile(r",?\s*\b(?:to|on) the (?P<side>left|right)(?: side)? of\s+" + ART + r"(?P<target>.+)$")
 BESIDE = re.compile(r",?\s*\b(?:beside|next to|alongside|near|close to|adjacent to|by the side of)\s+" + ART + r"(?P<target>.+)$")
+EDGE = re.compile(r"^(?:(?P<side>left|right|top|upper|bottom|lower)\s+)?(?:edge|end|border|boundary|side)\b")
+EDGE_SIDE = {"upper": "top", "lower": "bottom"}
 DIRECTION = re.compile(r"\b(?:left|right|up|down)(?:wards?)?\b")
 NAMED = re.compile(r"\b(?:the|this|that|my)\s+(?P<name>[a-z]+(?:\s+[a-z]+)?)")
 
@@ -41,12 +43,17 @@ def target_name(text):
 
 
 def parse(clause):
-    """{"kind": "touch" | "beside", "mover", "target", "side", "rest", "has_direction"}, or None for a plain edit.
+    """{"kind": "touch" | "edge" | "beside", "mover", "target", "side", "rest", "has_direction"}, or None for a plain edit.
     rest is the clause without the relation; it goes to the text model as usual."""
     for kind, pattern in (("touch", TOUCH), ("beside", SIDE), ("beside", BESIDE)):
         m = pattern.search(clause)
         if m:
             rest = clause[:m.start()].strip()
-            return {"kind": kind, "mover": name(rest), "target": target_name(m.group("target")),
-                    "side": m.groupdict().get("side"), "rest": rest, "has_direction": bool(DIRECTION.search(rest))}
+            out = {"kind": kind, "mover": name(rest), "target": target_name(m.group("target")),
+                   "side": m.groupdict().get("side"), "rest": rest, "has_direction": bool(DIRECTION.search(rest))}
+            edge = EDGE.match(m.group("target")) if kind == "touch" else None
+            if edge:                                               # "until it touches the left end / the border"
+                side = edge.group("side")
+                out.update(kind="edge", target=None, side=EDGE_SIDE.get(side, side))
+            return out
     return None
