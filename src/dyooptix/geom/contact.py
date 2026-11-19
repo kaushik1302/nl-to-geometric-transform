@@ -51,5 +51,22 @@ def beside(mover_mask, target_mask, side=None, gap_share=0.1):
     widths = np.ptp(mover[0]) + 1, np.ptp(target[0]) + 1          # in pixels
     gap = np.floor(gap_share * min(widths))
     shifted = (mover[0], mover[1] + dy)
-    tx, _ = approach(shifted, target, d, gap)                      # bottoms aligned, so they always share a lane
+    tx, _ = approach(shifted, target, d, gap)                      # type: ignore # bottoms aligned, so they always share a lane
     return float(tx), float(dy)
+
+def relation_shift(rel, mover_mask, target_mask, pred=None):
+    """Translation (tx, ty) in px for a relation from relations.parse.
+    pred: the text model's [tx, ty, ...] for rel["rest"]; only its direction is used, for touch with a direction word.
+    Raises ValueError with a readable reason when the move is not possible."""
+    if rel["kind"] == "beside":
+        return beside(mover_mask, target_mask, rel["side"])
+    d = None                                                       # no direction word: head for the target
+    if rel["has_direction"]:
+        if pred is None or np.hypot(pred[0], pred[1]) == 0:
+            raise ValueError(f"no movement direction found in '{rel['rest']}'")
+        k = round(np.degrees(np.arctan2(pred[1], pred[0])) / 45)   # nearest of the 8 directions
+        d = (np.cos(np.radians(45 * k)), np.sin(np.radians(45 * k)))
+    shift = touch(mover_mask, target_mask, d)
+    if shift is None:
+        raise ValueError(f"the {rel['target']} is not in the {rel['mover'] or 'object'}'s path in that direction")
+    return shift

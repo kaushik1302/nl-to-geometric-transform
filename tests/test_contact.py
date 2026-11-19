@@ -1,6 +1,6 @@
 import numpy as np
 
-from dyooptix.geom.contact import beside, touch
+from dyooptix.geom.contact import beside, relation_shift, touch
 
 
 def rect(x0, y0, x1, y1, size=200):
@@ -42,3 +42,20 @@ def test_who_moves_matters():
     a, b = rect(10, 40, 29, 79), rect(100, 60, 139, 99)
     assert beside(a, b) != beside(b, a)                            # bottle beside mug is not mug beside bottle
     assert beside(b, a) == (-68, -20)
+
+def test_relation_uses_the_model_direction_snapped():
+    rel = {"kind": "touch", "mover": "circle", "target": "square", "side": None, "rest": "move the circle right",
+           "has_direction": True}
+    tx, ty = relation_shift(rel, rect(10, 40, 29, 59), rect(60, 30, 79, 69), pred=[0.3, 0.04, 1, 0, 0])
+    assert np.isclose(tx, 30) and abs(ty) < 1e-9                   # slightly-off model direction snaps to "right"
+
+
+def test_relation_wrong_way_or_no_move_explains_why():
+    rel = {"kind": "touch", "mover": "circle", "target": "square", "side": None, "rest": "move the circle left",
+           "has_direction": True}
+    for pred in ([-0.3, 0, 1, 0, 0], [0, 0, 1, 0, 0]):
+        try:
+            relation_shift(rel, rect(10, 40, 29, 59), rect(60, 30, 79, 69), pred)
+            assert False
+        except ValueError as error:
+            assert "square" in str(error) or "direction" in str(error)

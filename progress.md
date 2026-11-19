@@ -270,3 +270,6 @@
 - New `models/relations.py`: `parse(clause)` finds "until it touches/reaches/hits/meets/contacts the X" (touch) and "beside / next to / alongside / near / close to / adjacent to / by the side of the X" or "to the left/right of the X" (beside, with a named side). Returns the mover (named first, so it is the one that moves), the target, the side, whether a direction word is present, and the rest of the clause for the text model. Plain "to the left" without "of" stays an ordinary move; plain "by" is excluded because it means an amount.
 - `name(text)`: one- or two-word object name after the/this/that/my; "it" and image/picture/photo mean the whole image.
 - Rules written from our own examples, not tuned on the fresh test set. 6 tests (50 in total).
+
+## 2026-11-20 · Relation to translation (4e-iii a)
+- `contact.relation_shift(rel, mover, target, pred)`: beside → `beside()`; touch with a direction word → the text model's direction snapped to the nearest of 8 directions, then `touch()`; touch without one → toward the target's centre. Not possible (target behind or out of the path, no move detected) → ValueError with the reason. The model decides which way, the scene decides how far. 2 tests (52 in total).
