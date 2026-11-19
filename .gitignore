@@ -12,4 +12,9 @@ __pycache__/
 /data/*
 !/data/human/
 /.gradio/
-!/outputs/mlp_*.pt
+!/outputs/mlp_*.ptmask*.png
+lama_out.png
+telea_out.png
+mask*.png
+lama_out.png
+telea_out.png

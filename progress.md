@@ -236,3 +236,8 @@
 - Results, hand+minilm, synthetic corner error (px): test combined 103.8 → 55.4 → 43.3; test single 30.0 → 30.0 → 20.4; unseen templates 33.2 → 33.2 → 24.4; GeoBench unchanged at 76.4 (no numbers or combined edits there).
 - Human set (development only), hand+minilm, explicit amounts: translate mean error 0.0 px (15 edits), scale 0.000 (35), rotate exact except two sentences. Direction accuracy: rotate 0.85 → 0.95 (single), 0.96 → 1.00 (multi); scale 0.895 → 0.947 and 0.97 → 1.00.
 - Known failure: word-only angles ("turn it upside down" = 180°) are outside the training vocabulary. Limitations: "move it to 100 px" is read as a relative move; "half" as ×0.5 even for "enlarge by half".
+
+## 2026-11-19 · Object clamp (4a)
+- New `geom/clamp.py`: keeps an edited object fully inside the image. Order: scale (grows about the object's own centre until the first side touches the border; scale-down never clamped; limit measured at the object's current position), then rotation (reduced toward 0° only if the object is too large to turn), then translation (clipped to the range that keeps the turned, scaled outline inside). Each change gives a ⚠ warning text. Whole-image edits are never clamped.
+- `place()` reuses `build_affine`, so the clamp and the image warp always agree. 5 tests in `tests/test_clamp.py` (31 tests in total).
+- Smoke scripts moved to `tools/` (smoke_gsam.py, smoke_lama.py); cache folder from DYOOPTIX_CACHE, default data/hf_cache.
