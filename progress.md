@@ -259,3 +259,9 @@
 - Cup photo (1536 × 1536), asked move +800 px, rotate +20°, scale ×1.3: applied +469 px (right edge), +20°, ×1.16 (left edge), both with ⚠ warnings; edit 14.9 s after the models are loaded.
 - Known limits: 2D edit only, so a turned or moved object can look like it floats (no contact, shadow or depth); the scale limit is measured before the move, so a move away from the edge does not allow more growth.
 - `tools/smoke_edit.py`: runs grounding + editing on a photo with an edit typed as numbers.
+
+
+## 2026-11-20 · Scene-derived translation: touch and beside (4e-i)
+- Novelty feedback from the intensive assessment: derive a geometric parameter from the scene when the instruction gives no number ("move the circle right until it touches the square").
+- New `geom/contact.py`: `touch(mover, target, d)` slides the mover along d until it touches (no gap); with no direction it heads for the target's centre; refuses when the target is behind or out of the path. `beside(mover, target, side)` aligns the bottoms and places the mover on the nearest side (or the named side) with a gap of 10% of the narrower width. The first object moves, so "bottle beside the mug" and "mug beside the bottle" differ.
+- Method: lanes 1 px wide at right angles to the motion; the smallest gap over lanes that hold both objects is the contact distance. 7 tests (44 in total); 0.08 s on two 1536-px masks.
