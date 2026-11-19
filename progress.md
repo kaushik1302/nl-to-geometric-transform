@@ -242,8 +242,13 @@
 - `place()` reuses `build_affine`, so the clamp and the image warp always agree. 5 tests in `tests/test_clamp.py` (31 tests in total).
 - Smoke scripts moved to `tools/` (smoke_gsam.py, smoke_lama.py); cache folder from DYOOPTIX_CACHE, default data/hf_cache.
 
-
 ## 2026-11-19 · Text-grounded object masks (4b)
 - New `geom/grounding.py`: `find_object(image, word)` runs Grounding DINO (word → box, on a shrunken copy of the photo) then SAM (box → mask); `outline(mask)` gives the convex hull of the largest blob for the clamp. Models load once (`load()`), results are cached per (photo fingerprint, word), and a missing object raises `ObjectNotFound` with the best rejected score ("best match 0.21, needs 0.30").
 - LaMa tests on a large cup photo: inpainting at full size took 42 s with a grey band and seam; the same fill on a crop shrunk to 512 px took 5 s and removed the tint. Decision: object crop plus margin, long side at most 512, never enlarged; only masked pixels are written back. Known limit: printed text and fine patterns (keyboard mat) stay visible in the fill.
 - `tools/smoke_gsam.py` now checks the module (load time, cache, outline, missing object). 33 tests pass.
+
+
+## 2026-11-19 · Hole filling with LaMa (4c-i)
+- New `geom/inpaint.py`: `fill(image, mask)` grows the mask by about 7 px, crops the hole plus a 50% margin, shrinks the crop to at most 512 px (never enlarges), fills it with LaMa, scales the fill back and writes only the hole's pixels into a copy of the photo. LaMa loads once (`load()`).
+- Cup photo (1536 × 1536, hole 24% of the photo): fill 7.6 s on the first call after loading, result identical to the 512-px smoke test.
+- `tools/smoke_lama.py` now checks the module.
