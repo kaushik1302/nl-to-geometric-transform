@@ -13,6 +13,16 @@ ROT_WORD = re.compile(r"clockwise|counter|anti|\bleft\b|\bright\b")
 SCALE_WORD = re.compile(r"scal|shrink|enlarg|bigger|larger|smaller|resiz|reduc|grow|expand|zoom")
 FACTOR_WORD = re.compile(r"\b(double|twice|halve|half)\b")
 FACTOR_VALUE = {"double": 2, "twice": 2, "halve": 0.5, "half": 0.5}
+ACROSS = re.compile(r"\b(?:left|right)")                       # a horizontal direction word
+UPDOWN = re.compile(r"\b(?:up|down|top|bottom|upper|lower)")   # a vertical direction word
+
+
+def snap(tx, ty, text):
+    """Unit direction nearest to (tx, ty): one of 8 if the text names a diagonal, else one of the 4 main directions."""
+    diagonal = "diagonal" in text or bool(ACROSS.search(text) and UPDOWN.search(text))
+    step = 45 if diagonal else 90
+    a = np.radians(step * round(np.degrees(np.arctan2(ty, tx)) / step))
+    return np.array([np.cos(a), np.sin(a)])
 
 
 def wrap(deg):
@@ -31,7 +41,7 @@ def fix_numbers(clause, pred, present):
         if DEG.search(text):
             deg = float(DEG.search(text).group(1))
         elif RAD.search(text):
-            deg = np.degrees(float(RAD.search(text).group(1))) 
+            deg = np.degrees(float(RAD.search(text).group(1)))
         elif not (t or sc) and BARE.search(text):
             deg = float(BARE.search(text).group(1))
         if deg is not None:
@@ -49,9 +59,7 @@ def fix_numbers(clause, pred, present):
         elif not (r or sc) and BARE.search(text):
             frac = float(BARE.search(text).group(1)) / WIDTH
         if frac is not None and np.hypot(*out[:2]) > 0:
-            k = round(np.degrees(np.arctan2(out[1], out[0])) / 45)   # nearest of the 8 directions
-            a = np.radians(45 * k)
-            out[:2] = frac * np.array([np.cos(a), np.sin(a)])
+            out[:2] = frac * snap(out[0], out[1], text)
 
     if sc:
         f = None

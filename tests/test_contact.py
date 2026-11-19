@@ -68,3 +68,9 @@ def test_edge_named_side_direction_and_nearest():
     assert to_edge(m) == (-10, 0)                                  # nearest edge: left
     tx, ty = to_edge(m, d=(1, 1))                                  # diagonal: reaches the bottom first
     assert np.isclose(tx, 140) and np.isclose(ty, 140)
+
+def test_weak_model_direction_with_one_word_stays_on_the_axis():
+    rel = {"kind": "touch", "mover": "circle", "target": "square", "side": None, "rest": "slide the circle left",
+           "has_direction": True}
+    tx, ty = relation_shift(rel, rect(100, 40, 119, 59), rect(20, 30, 39, 69), pred=[-0.086, 0.039, 1, 0, 0])
+    assert np.isclose(tx, -60) and abs(ty) < 1e-9                  # left edge 100 -> 40, next to the square at 39

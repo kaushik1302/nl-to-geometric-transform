@@ -1,5 +1,5 @@
 import numpy as np
-from dyooptix.models.numbers import fix_numbers
+from dyooptix.models.numbers import fix_numbers, snap
 
 T, R, S = (True, False, False), (False, True, False), (False, False, True)
 
@@ -72,3 +72,8 @@ def test_word_factors():
 def test_percent_goes_to_scale_when_clause_has_a_scale_word():
     o = fix_numbers("scale down 20%", pred(tx=0.1, logs=-0.1), (True, False, True))
     assert np.isclose(o[4], np.log(0.8)) and np.isclose(o[0], 0.1) # type: ignore
+
+def test_one_direction_word_snaps_to_a_main_direction():
+    o = fix_numbers("slide the circle left by 100 px", pred(tx=-0.086, ty=0.039), T)   # 155.6 deg: nearer down-left
+    assert np.allclose(o[:2], [-100 / 512, 0], atol=1e-9)
+    assert np.allclose(snap(0.2, -0.25, "move it up and right"), [0.7071, -0.7071], atol=1e-3)

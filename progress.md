@@ -285,3 +285,9 @@
 - `relations.parse`: "until it touches/reaches/hits the edge / end / border / boundary / side", optionally with left / right / top (upper) / bottom (lower) → kind "edge".
 - `contact.to_edge(mask, side, d)`: named side → that border; a direction word only → the first border reached along it; neither → the nearest border. A named side wins over a direction word.
 - Shape test set extended to 56 images with 8 edge cases (4 named edges, 2 direction-only, 2 nearest); expected moves exact. 54 tests in total.
+
+## 2026-11-20 · Scene pipeline and shape evaluation (4e-iii b2)
+- New `models/scene.py`: `read(sentence)` splits clauses, finds the relation and the mover (first-named object; "it" refers to it); `scene_edit(...)` merges plain clauses (px = pixels of this photo), clamps rotation and scale first, measures the relation on the turned and scaled mask, and lets the relation decide the final position. 4 tests.
+- New `models/eval_scene.py`: shape test set with true masks or Grounded-SAM masks; scores the clamped translation against the exact expected one (within 3 px).
+- Found on the shape test: "slide the circle left" gave a weak direction (155.6°) that the 8-way snap turned into down-left. New `numbers.snap(tx, ty, text)`: diagonal only if the clause names one (a horizontal and a vertical word, or "diagonal"), else nearest of the 4 main directions; used in `fix_numbers` and `relation_shift`. Rule added after seeing this failure; the fresh LLM-written set is untouched.
+- Results: shapes with true masks 56/56 within 3 px (was 54/56). Human set (development): translate direction hand+minilm multi-edit 0.765 → 0.794, minilm single-edit 0.526 → 0.684; explicit amounts still exact; nothing worse.
