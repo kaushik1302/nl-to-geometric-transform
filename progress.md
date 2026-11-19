@@ -265,3 +265,8 @@
 - Novelty feedback from the intensive assessment: derive a geometric parameter from the scene when the instruction gives no number ("move the circle right until it touches the square").
 - New `geom/contact.py`: `touch(mover, target, d)` slides the mover along d until it touches (no gap); with no direction it heads for the target's centre; refuses when the target is behind or out of the path. `beside(mover, target, side)` aligns the bottoms and places the mover on the nearest side (or the named side) with a gap of 10% of the narrower width. The first object moves, so "bottle beside the mug" and "mug beside the bottle" differ.
 - Method: lanes 1 px wide at right angles to the motion; the smallest gap over lanes that hold both objects is the contact distance. 7 tests (44 in total); 0.08 s on two 1536-px masks.
+
+## 2026-11-20 · Reading relations from the text (4e-ii)
+- New `models/relations.py`: `parse(clause)` finds "until it touches/reaches/hits/meets/contacts the X" (touch) and "beside / next to / alongside / near / close to / adjacent to / by the side of the X" or "to the left/right of the X" (beside, with a named side). Returns the mover (named first, so it is the one that moves), the target, the side, whether a direction word is present, and the rest of the clause for the text model. Plain "to the left" without "of" stays an ordinary move; plain "by" is excluded because it means an amount.
+- `name(text)`: one- or two-word object name after the/this/that/my; "it" and image/picture/photo mean the whole image.
+- Rules written from our own examples, not tuned on the fresh test set. 6 tests (50 in total).
