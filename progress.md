@@ -252,3 +252,10 @@
 - New `geom/inpaint.py`: `fill(image, mask)` grows the mask by about 7 px, crops the hole plus a 50% margin, shrinks the crop to at most 512 px (never enlarges), fills it with LaMa, scales the fill back and writes only the hole's pixels into a copy of the photo. LaMa loads once (`load()`).
 - Cup photo (1536 × 1536, hole 24% of the photo): fill 7.6 s on the first call after loading, result identical to the 512-px smoke test.
 - `tools/smoke_lama.py` now checks the module.
+
+
+## 2026-11-19 · Object editing pipeline (4c-ii)
+- New `geom/object_edit.py`: `edit_object(image, mask, target)` takes the model's [tx, ty, cos, sin, log s], uses the mask centroid as the pivot, clamps the edit with `clamp()`, fills the old place with LaMa (`fill()`), moves the object with the same `build_affine` matrix and pastes it with a soft edge (mask eroded 1 px, blurred with sigma 1.5 px). No edit left after clamping returns the photo untouched. 4 tests with a stand-in for LaMa (37 tests in total).
+- Cup photo (1536 × 1536), asked move +800 px, rotate +20°, scale ×1.3: applied +469 px (right edge), +20°, ×1.16 (left edge), both with ⚠ warnings; edit 14.9 s after the models are loaded.
+- Known limits: 2D edit only, so a turned or moved object can look like it floats (no contact, shadow or depth); the scale limit is measured before the move, so a move away from the edge does not allow more growth.
+- `tools/smoke_edit.py`: runs grounding + editing on a photo with an edit typed as numbers.
