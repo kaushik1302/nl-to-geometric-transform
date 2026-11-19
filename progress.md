@@ -273,3 +273,9 @@
 
 ## 2026-11-20 · Relation to translation (4e-iii a)
 - `contact.relation_shift(rel, mover, target, pred)`: beside → `beside()`; touch with a direction word → the text model's direction snapped to the nearest of 8 directions, then `touch()`; touch without one → toward the target's centre. Not possible (target behind or out of the path, no move detected) → ValueError with the reason. The model decides which way, the scene decides how far. 2 tests (52 in total).
+
+
+## 2026-11-20 · Shape test set for scene-derived edits (4e-iii b1)
+- New `data/shapes.py`: 48 images (512 px, red circle, blue square, fixed seed 643): 16 "move the circle right/left/up/down until it touches/reaches/hits the square" (4 meeting the square's corner), 8 without a direction word, 16 "beside / next to / near / alongside / close to" (nearest side), 8 "to the left/right of" (named side, sometimes the far side).
+- Expected translation from exact circle–rectangle geometry, written independently of contact.py. Cross-check with true masks and the correct direction: contact.py agrees within 0.86 px (mean 0.09 px).
+- Output in data/shapes (git-ignored; rebuild with `python -m dyooptix.data.shapes`).
