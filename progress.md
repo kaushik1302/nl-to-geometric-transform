@@ -322,3 +322,12 @@
 ## 2026-11-20 · Touch without a direction slides along the main axis
 - Objects stay on their surface (no lift toward the target's centre); falls back to the straight line when no lane is shared
 - Shape set 56/56 with true masks (median error 0.0 px for touch without direction)
+
+
+## 2026-11-20 · Figure: one sentence, four gaps
+- fig_scene.py runs one instruction ("move the circle right until it touches the square") on four images that differ only in the gap (40, 100, 180, 260 px) and plots the predicted move against the exact one
+- Predicted +40 / +100 / +180 / +260 px against exact +39 / +99 / +179 / +259 px: the move comes from the picture, not from a typed number (1 px difference is the SAM mask offset)
+
+## 2026-11-20 · Poster figure: demo examples with predicted parameters
+- tools/fig_demo.py runs six instructions through pipeline.run and draws input, predicted parameters and edited result per row: two whole-image edits (37 degrees turn; shrink and turn on a non-square photo), a named object moved by pixels, rotate and enlarge with clamp warnings, touch, beside
+- Only the test card and dev photos are used; the fresh test set is untouched
