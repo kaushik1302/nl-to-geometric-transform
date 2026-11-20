@@ -297,3 +297,8 @@
 - Shape test with Grounded-SAM masks exposed: for "square", DINO-tiny returned the circle's box (score 0.65–0.68 vs 0.91 for "circle") in 3 of 56 images, so mover and target were the same mask (two refusals, one wrong side).
 - `grounding.find_object(image, name, avoid=box)`: a candidate box overlapping `avoid` with IoU ≥ 0.5 is skipped; the best remaining box is used, else "couldn't find X apart from the other object". The target is looked up avoiding the mover's box. `box_iou` + test. Rule added after seeing this failure; the fresh LLM-written set is untouched.
 - Shape test (56 images, sentences with no number, expected moves from exact geometry), within 3 px of the exact translation: true masks 56/56 (median 0–0.24 px), Grounded-SAM masks 56/56 (median 1.0–1.4 px; was 53/56 before this rule).
+
+
+## 2026-11-20 · Object names without "the"; "near to"
+- BESIDE accepts "near to"; names written without "the" are found (first word that is not a verb, direction or number unit)
+- names_whole() separates "image named" (whole image) from "nothing named" (main object, next in the demo step)

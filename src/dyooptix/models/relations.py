@@ -4,7 +4,7 @@ import re
 ART = r"(?:the |a |an |this |that |my )?"
 TOUCH = re.compile(r",?\s*until (?:it |they )?(?:touch|reach|hit|meet|contact)(?:es|s)?\s+" + ART + r"(?P<target>.+)$")
 SIDE = re.compile(r",?\s*\b(?:to|on) the (?P<side>left|right)(?: side)? of\s+" + ART + r"(?P<target>.+)$")
-BESIDE = re.compile(r",?\s*\b(?:beside|next to|alongside|near|close to|adjacent to|by the side of)\s+" + ART + r"(?P<target>.+)$")
+BESIDE = re.compile(r",?\s*\b(?:beside|next to|alongside|near(?: to)?|close to|adjacent to|by the side of)\s+" + ART + r"(?P<target>.+)$")
 EDGE = re.compile(r"^(?:(?P<side>left|right|top|upper|bottom|lower)\s+)?(?:edge|end|border|boundary|side)\b")
 EDGE_SIDE = {"upper": "top", "lower": "bottom"}
 DIRECTION = re.compile(r"\b(?:left|right|up|down)(?:wards?)?\b")
@@ -18,10 +18,31 @@ NOT_NAME = {                                                                    
     "slightly", "little", "bit", "lot", "much", "gently", "mildly", "noticeably", "significantly", "considerably",
     "bigger", "smaller", "larger", "twice", "half", "times", "degrees", "px", "pixels", "percent",
 }
+VERBS = {                                                                        # edit verbs: never an object name
+    "move", "shift", "slide", "push", "pull", "translate", "rotate", "turn", "spin", "scale", "resize", "shrink",
+    "enlarge", "grow", "make", "bring", "place", "put", "drag", "expand", "reduce", "increase", "decrease", "zoom",
+}
+FILLER = {                                                                       # other words that are never a name
+    "the", "as", "than", "is", "be", "x", "deg", "degree", "rad", "radian", "radians", "pixel", "around", "over", "out",
+    "back", "away", "more", "less", "upside", "again", "also", "just", "about", "into", "from", "for", "with",
+    "big", "small", "large", "tall", "wide", "short", "narrow", "size",
+}
+
+
+def loose_name(text):
+    """Name written without 'the': the first word (and a following one) that is not a verb, number unit or direction."""
+    skip = NOT_NAME | VERBS | FILLER
+    words = re.findall(r"[a-z]+", text.lower())
+    for i, w in enumerate(words):
+        if w not in skip:
+            if i + 1 < len(words) and words[i + 1] not in skip:
+                w += " " + words[i + 1]
+            return None if w.split()[0] in WHOLE else w
+    return None
 
 
 def name(text):
-    """First object name in text: one or two words after the/this/that/my. None for 'it' or the whole image."""
+    """First object name in text: one or two words after the/this/that/my, else a bare name. None for 'it' or the whole image."""
     for m in NAMED.finditer(text):
         words = m.group("name").split()
         if words[0] in NOT_NAME:
@@ -31,7 +52,12 @@ def name(text):
         if words[0] in WHOLE:
             return None
         return " ".join(words)
-    return None
+    return loose_name(text)
+
+
+def names_whole(text):
+    """True if the text says 'image / picture / photo / whole ...': then the edit is for the whole image."""
+    return any(w in WHOLE for w in re.findall(r"[a-z]+", text.lower()))
 
 
 def target_name(text):

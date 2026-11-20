@@ -1,4 +1,4 @@
-from dyooptix.models.relations import name, parse
+from dyooptix.models.relations import name, names_whole, parse
 
 
 def test_touch_with_direction():
@@ -43,3 +43,22 @@ def test_edge_words_and_sides():
     assert (r["kind"], r["mover"], r["side"], r["has_direction"]) == ("edge", None, "top", True)
     r = parse("move the mug until it touches the edge")
     assert (r["kind"], r["side"], r["has_direction"]) == ("edge", None, False)
+
+
+def test_near_to():
+    assert parse("Move the circle near to the bottle")["target"] == "bottle"
+
+
+def test_mover_without_article():
+    assert parse("Move circle near the bottle")["mover"] == "circle"
+    assert parse("move coffee mug next to bottle")["mover"] == "coffee mug"
+
+
+def test_no_object_named():
+    for text in ("rotate 20 degrees clockwise", "move right 50 px", "make it twice as big", "scale it to 1.5x"):
+        assert name(text) is None
+
+
+def test_whole_image_words():
+    assert names_whole("rotate the image 90 degrees") and names_whole("rotate image 90")
+    assert not names_whole("rotate 90 degrees")
