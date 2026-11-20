@@ -18,9 +18,9 @@ PIXELS = re.compile(r"\d\s*(?:pixels|px)\b")
 NOTHING = np.array([0.0, 0.0, 1.0, 0.0, 0.0])
 
 
-def read(sentence):
+def read(sentence, split=True):
     """(clauses, relation per clause or None, the object that moves, the texts the text model should read)."""
-    clauses = split_clauses(sentence) or [sentence]
+    clauses = (split_clauses(sentence) if split else None) or [sentence]
     rels = [parse(c) for c in clauses]
     names = [r["mover"] if r else name(c) for c, r in zip(clauses, rels)]
     mover = next((n for n in names if n), None)                    # later "it" refers to this object

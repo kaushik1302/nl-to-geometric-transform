@@ -302,3 +302,13 @@
 ## 2026-11-20 · Object names without "the"; "near to"
 - BESIDE accepts "near to"; names written without "the" are found (first word that is not a verb, direction or number unit)
 - names_whole() separates "image named" (whole image) from "nothing named" (main object, next in the demo step)
+
+## 2026-11-20 · Main object when no object is named
+- find_main: Grounding DINO with the word "object"; boxes of 1%-90% of the photo; the best box needs score >= 0.30, none means the whole image (message says so)
+- Several similar objects (score within 0.10, or score >= 0.15 and area within half to twice the best, not wider than 90% of the photo) = tie: the biggest is edited, all are marked, message says so; one clear object: no message
+- Values are untuned defaults fitted on the cup, shape images and three dev photos only; the fresh test set was not used
+- Known limit: the detector knows only the word "object", so the message cannot name the object that was edited
+
+## 2026-11-20 · One pipeline for the demo and the scorers
+- pipeline.run(image, instruction, rep, use_split, object_name): whole-image edit or object edit (ground, text model, scene_edit, clamp, inpaint, paste); errors leave the photo unchanged with the reason
+- Object box replaces the mover only; a relation's target still comes from the sentence

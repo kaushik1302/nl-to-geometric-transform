@@ -14,8 +14,13 @@ SAM_ID = "facebook/sam-vit-base"
 MIN_SCORE = 0.30          # below this, DINO is not sure the object is in the photo
 FLOOR = 0.05              # lowest score kept, only so the error message can report the best rejected match
 OVERLAP = 0.5             # a box overlapping the other named object this much (IoU) is that object, not this one
+MAIN_AREA = (0.01, 0.90)  # a main object covers 1% to 90% of the photo
+TIE_MARGIN = 0.10         # an object scoring within this of the best is equally "main"
+SIBLING_SCORE = 0.15      # a lower-scoring box still counts as a similar object if it scores at least this ...
+SIBLING_SIZE = (0.5, 2.0) # ... and is between half and twice the best object's area ...
+MAX_SPAN = 0.90           # ... and is narrower than this share of the photo (wider boxes are tables or walls)
 
-_found = {}               # (photo fingerprint, object word, avoided box) -> result of _ground
+_found = {}               # (photo fingerprint, object word, avoided box) -> result of _ground / _main
 
 
 class ObjectNotFound(Exception):
@@ -52,20 +57,45 @@ def find_object(image, name, avoid=None):
     return _found[key]
 
 
-def _ground(image, name, avoid=None):
-    import torch
-    dino_proc, dino, sam_proc, sam = load()
-    photo = Image.fromarray(image)
-    H, W = image.shape[:2]
+def find_main(image):
+    """The main object of a photo when the sentence names none.
+    Returns {"status": "main" | "tie" | "none", "mask", "box", "score", "candidates": [{"box", "score"}], "message"}.
+    main: one clear object, message is empty. tie: several similar objects; the biggest is edited, all are listed
+    (biggest first), message says so. none: mask is None, the whole image is edited, message says so."""
+    key = (hashlib.md5(image.tobytes()).hexdigest(), "<main>", None)
+    if key not in _found:
+        _found[key] = _main(image)
+    return _found[key]
 
-    # 1) text -> box, on a small copy of the photo (fast); boxes come back in the original photo's pixels
-    inputs = dino_proc(images=photo, text=name + ".", return_tensors="pt",
+
+def _detect(image, text):
+    """Grounding DINO on a small copy of the photo (fast): scores and boxes in the original photo's pixels."""
+    import torch
+    dino_proc, dino, _, _ = load()
+    H, W = image.shape[:2]
+    inputs = dino_proc(images=Image.fromarray(image), text=text + ".", return_tensors="pt",
                        size={"shortest_edge": 480, "longest_edge": 640})
     with torch.no_grad():
         out = dino(**inputs)
     found = dino_proc.post_process_grounded_object_detection(
         out, inputs.input_ids, threshold=FLOOR, text_threshold=0.25, target_sizes=[(H, W)])[0]
-    scores, boxes = found["scores"].tolist(), found["boxes"].tolist()
+    return found["scores"].tolist(), found["boxes"].tolist()
+
+
+def _segment(image, box):
+    """SAM: box -> mask (0/255 uint8). SAM proposes three masks, keep the one it scores highest."""
+    import torch
+    _, _, sam_proc, sam = load()
+    inputs = sam_proc(Image.fromarray(image), input_boxes=[[box]], return_tensors="pt")
+    with torch.no_grad():
+        out = sam(**inputs)
+    masks = sam_proc.image_processor.post_process_masks(
+        out.pred_masks, inputs["original_sizes"], inputs["reshaped_input_sizes"])[0]
+    return masks[0, out.iou_scores[0, 0].argmax()].numpy().astype(np.uint8) * 255
+
+
+def _ground(image, name, avoid=None):
+    scores, boxes = _detect(image, name)
     allowed = [i for i in range(len(scores)) if avoid is None or box_iou(boxes[i], avoid) < OVERLAP]
     i = max(allowed, key=lambda k: scores[k]) if allowed else None
     if i is None or scores[i] < MIN_SCORE:
@@ -73,16 +103,36 @@ def _ground(image, name, avoid=None):
         where = "in the photo" if avoid is None else "apart from the other object"
         raise ObjectNotFound(f"Couldn't find '{name}' {where} (best match {best:.2f}, needs {MIN_SCORE:.2f}). "
                              "Try another word in the Object box, or leave the object out to edit the whole image.")
-    box = boxes[i]
+    return {"mask": _segment(image, boxes[i]), "box": boxes[i], "score": scores[i]}
 
-    # 2) box -> mask; SAM proposes three masks, keep the one it scores highest
-    inputs = sam_proc(photo, input_boxes=[[box]], return_tensors="pt")
-    with torch.no_grad():
-        out = sam(**inputs)
-    masks = sam_proc.image_processor.post_process_masks(
-        out.pred_masks, inputs["original_sizes"], inputs["reshaped_input_sizes"])[0]
-    mask = masks[0, out.iou_scores[0, 0].argmax()].numpy().astype(np.uint8) * 255
-    return {"mask": mask, "box": box, "score": scores[i]}
+
+def _main(image):
+    H, W = image.shape[:2]
+    scores, boxes = _detect(image, "object")
+    size = lambda b: (b[2] - b[0]) * (b[3] - b[1])
+    ranked = sorted(((s, b) for s, b in zip(scores, boxes)
+                     if s >= SIBLING_SCORE and MAIN_AREA[0] <= size(b) / (W * H) <= MAIN_AREA[1]),
+                    key=lambda k: k[0], reverse=True)
+    kept = []                                                  # the same object found twice counts once
+    for s, b in ranked:
+        if all(box_iou(b, other) < OVERLAP for _, other in kept):
+            kept.append((s, b))
+    if not kept or kept[0][0] < MIN_SCORE:                     # not even the best box is a sure object
+        return {"status": "none", "mask": None, "box": None, "score": 0.0, "candidates": [],
+                "message": "No clear object found, so the edit is applied to the whole image."}
+
+    best, anchor = kept[0]
+    similar = lambda s, b: (best - s < TIE_MARGIN or                      # scores about the same, or a separate
+                            (SIBLING_SIZE[0] <= size(b) / size(anchor) <= SIBLING_SIZE[1]   # object of similar size
+                             and b[2] - b[0] < MAX_SPAN * W))
+    group = sorted((k for k in kept if similar(*k)), key=lambda k: size(k[1]), reverse=True)   # biggest first
+    score, box = group[0]
+    message = ""
+    if len(group) > 1:
+        message = (f"{len(group)} similar objects found. Edited the biggest one (marked 'edited'); "
+                   "type an object name in the Object box to choose another.")
+    return {"status": "tie" if len(group) > 1 else "main", "mask": _segment(image, box), "box": box, "score": score,
+            "candidates": [{"box": b, "score": s} for s, b in group], "message": message}
 
 
 def outline(mask):
