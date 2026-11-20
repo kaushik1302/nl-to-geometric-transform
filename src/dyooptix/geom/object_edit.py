@@ -28,6 +28,7 @@ def edit_object(image, mask, target):
 
     a = np.radians(deg)
     M = build_affine({"tx": tx / W, "ty": ty / W, "cos": np.cos(a), "sin": np.sin(a), "log_s": np.log(s)}, centre, W)
+    info["matrix"] = M                                             # shown in the demo's report
 
     alpha = cv2.erode((mask > 127).astype(np.float32), np.ones((3, 3), np.uint8), iterations=SHRINK)
     alpha = cv2.GaussianBlur(alpha, (0, 0), SOFT)                  # 1 inside the object, fading to 0 at its edge

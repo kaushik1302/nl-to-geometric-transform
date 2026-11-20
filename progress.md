@@ -312,3 +312,13 @@
 ## 2026-11-20 · One pipeline for the demo and the scorers
 - pipeline.run(image, instruction, rep, use_split, object_name): whole-image edit or object edit (ground, text model, scene_edit, clamp, inpaint, paste); errors leave the photo unchanged with the reason
 - Object box replaces the mover only; a relation's target still comes from the sentence
+
+## 2026-11-20 · Demo wired to the pipeline
+- app.py only builds the interface and calls pipeline.run; models, DINO+SAM and LaMa load once at start-up
+- New Object box (replaces the mover only); "What the app considered" image shows boxes only when several similar objects were found
+- Test card treated like any photo: whole-image examples say "the image"; square and circle examples edit one object
+- Object report shows the affine matrix about the object's centre and the clamp warnings
+
+## 2026-11-20 · Touch without a direction slides along the main axis
+- Objects stay on their surface (no lift toward the target's centre); falls back to the straight line when no lane is shared
+- Shape set 56/56 with true masks (median error 0.0 px for touch without direction)

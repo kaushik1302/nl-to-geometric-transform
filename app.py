@@ -1,4 +1,3 @@
-import re
 import sys
 from pathlib import Path
 
@@ -7,38 +6,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))  # lets app.py 
 import cv2
 import gradio as gr
 import numpy as np
-import torch
-from sentence_transformers import SentenceTransformer
 
-from dyooptix.geom.affine import build_affine
-from dyooptix.geom.warp import warp
-from dyooptix.models.breakdown import load_model
-from dyooptix.models.encode import hand_features
-from dyooptix.models.metrics import to_params
-from dyooptix.models.mlp import predict, standardise
-from dyooptix.models.numbers import fix_numbers
-from dyooptix.models.split import merge, split_clauses
-
-REPS = ["hand+minilm", "hand", "minilm"]   # the first one is the default (used automatically)
-EDITS = ["translate", "rotate", "scale"]
-REFERENCE_WIDTH = 512                      # explicit pixels in training refer to a 512-wide image
-PIXELS = re.compile(r"\d\s*(?:pixels|px)\b")
-
-# Spelling variants of the same word -> the spelling used in training (demo input cleaning only)
-SPELLINGS = {
-    "clock-wise": "clockwise", "clock wise": "clockwise",
-    "anti-clockwise": "anticlockwise", "anti clockwise": "anticlockwise",
-    "counterclockwise": "counter-clockwise", "counter clockwise": "counter-clockwise",
-}
-
-MODELS = {rep: load_model(rep) for rep in REPS}  # loaded once, at start-up
-MINILM = SentenceTransformer("all-MiniLM-L6-v2")
-
-
-def normalise(sentence):
-    for variant, canonical in SPELLINGS.items():
-        sentence = sentence.replace(variant, canonical)
-    return sentence
+from dyooptix.geom import grounding, inpaint
+from dyooptix.models.pipeline import REPS, models, run
 
 
 def sample_image(size=512):
@@ -54,85 +24,62 @@ def sample_image(size=512):
     return image
 
 
-def encode(sentence, rep):
-    """Same features as in training; "hand+minilm" stacks hand then MiniLM, like load_features."""
-    parts = []
-    for part in rep.split("+"):
-        if part == "hand":
-            parts.append(np.array([hand_features(sentence)], dtype=np.float32))
-        else:
-            parts.append(MINILM.encode([sentence]))
-    return np.hstack(parts)
+def draw(image, marks):
+    """The photo with every candidate object boxed and labelled."""
+    shown = image.copy()
+    thick = max(2, round(max(shown.shape[:2]) / 250))
+    for m in marks:
+        x0, y0, x1, y1 = (int(v) for v in m["box"])
+        cv2.rectangle(shown, (x0, y0), (x1, y1), (255, 140, 0), thick)
+        cv2.putText(shown, m["label"], (x0 + thick, y0 + 12 * thick), cv2.FONT_HERSHEY_SIMPLEX,
+                    thick / 3, (255, 140, 0), thick)
+    return shown
 
 
-def edit(instruction, image, rep=REPS[0], use_split=True):
+def edit(instruction, image, object_name="", rep=REPS[0], use_split=True):
     if image is None:
         image = sample_image()
-    sentence = normalise(instruction.lower().strip().rstrip(".!?"))
-    if not sentence:
-        return image, "Type an instruction."
+    result = run(image, instruction, rep, use_split, object_name or "")
+    considered = draw(image, result["marks"]) if result["marks"] else None   # only when the main object was a tie
+    return result["image"], considered, result["report"]
 
-    model, mean, std = MODELS[rep]
-    clauses = (split_clauses(sentence) or [sentence]) if use_split else [sentence]
-    x = standardise(np.vstack([encode(c, rep) for c in clauses]), mean, std)
-    pred, present = predict(model, x)                  # gated [tx, ty, cos, sin, log s], one row per clause
-    pred = np.array([fix_numbers(c, p, r.astype(bool)) for c, p, r in zip(clauses, pred, present)])  # exact numbers
-    with torch.no_grad():
-        probs = torch.sigmoid(model(x)[0]).max(dim=0).values.numpy()  # per edit: highest over clauses
 
-    target = merge(pred)                               # one clause: unchanged
-    h, w = image.shape[:2]
-    explicit_px = bool(PIXELS.search(sentence))
-    if explicit_px:
-        # tx, ty are fractions of a 512-px width; "50 px" must mean 50 real pixels of this image
-        target[0] *= REFERENCE_WIDTH / w
-        target[1] *= REFERENCE_WIDTH / w
-
-    p = to_params(target)
-    angle = np.degrees(np.arctan2(p["sin"], p["cos"]))
-    M = build_affine(p, (w / 2, h / 2), w)
-
-    lines = [f"Model: {rep}", f"Text used: {sentence}"]
-    if len(clauses) > 1:
-        lines.append("Clauses: " + " | ".join(clauses))
-    lines.append("Detected edits (probability):")
-    lines += [f"  {name:9}  {prob:.2f}  {'✓' if prob > 0.5 else ''}" for name, prob in zip(EDITS, probs)]
-    lines += [f"Translation: tx = {p['tx'] * w:+.0f} px, ty = {p['ty'] * w:+.0f} px   (+x right, +y down)"
-              + ("   [explicit pixels: real pixels of this image]" if explicit_px else ""),
-              f"Rotation:    {angle:+.1f}°   (+ = counter-clockwise)",
-              f"Scale:       ×{np.exp(p['log_s']):.2f}",
-              f"Image size:  {w} × {h}",
-              "Affine matrix (2×3):",
-              np.array2string(M, precision=2, suppress_small=True)]
-    return warp(image, target, cv2.INTER_LINEAR), "\n".join(lines)
-
+models()                       # everything is loaded once, at start-up
+grounding.load()
+inpaint.load()
 
 demo = gr.Interface(
     fn=edit,
     inputs=[
-        gr.Textbox(label="Edit instruction", placeholder="e.g. rotate it 90 degrees clockwise and shrink it to 0.7x"),
+        gr.Textbox(label="Edit instruction", placeholder="e.g. move the cup 100 px to the right and rotate it 20 degrees clockwise"),
         gr.Image(type="numpy", label="Image (leave empty to use the test card)"),
+        gr.Textbox(label="Object (optional)", placeholder="the object to edit; leave empty to use the one in the instruction"),
     ],
     additional_inputs=[                                  # hidden in a collapsed panel; defaults are used otherwise
         gr.Radio(REPS, value=REPS[0], label="Text representation"),
         gr.Checkbox(value=True, label="Split into clauses (and / then / commas)"),
     ],
     additional_inputs_accordion=gr.Accordion("Advanced (for comparison)", open=False),
-    outputs=[gr.Image(label="Edited image"), gr.Textbox(label="Predicted parameters", lines=14)],
+    outputs=[gr.Image(label="Edited image"),
+             gr.Image(label="What the app considered (shown when several objects look equally main)"),
+             gr.Textbox(label="Predicted parameters", lines=14)],
     examples=[
-        ["rotate the image by 90 degrees clockwise", None, "hand+minilm", True],
-        ["move it 100 px to the right", None, "hand+minilm", True],
-        ["scale it to 0.5x", None, "hand+minilm", True],
-        ["shrink it to 0.7x and turn it slightly counter-clockwise", None, "hand+minilm", True],
-        ["move it slightly to the left and enlarge it a lot", None, "hand+minilm", True],
-        ["drag the box upward mildly", None, "hand+minilm", True],
-        ["move it right by 100 px, then rotate it 30 degrees clockwise and make it twice as big", None, "hand+minilm", True],
+        ["rotate the image by 90 degrees clockwise", None, "", "hand+minilm", True],
+        ["move the image 100 px to the right", None, "", "hand+minilm", True],
+        ["scale the image to 0.5x", None, "", "hand+minilm", True],
+        ["shrink the image to 0.7x and turn it slightly counter-clockwise", None, "", "hand+minilm", True],
+        ["move the square slightly to the left and enlarge it a lot", None, "", "hand+minilm", True],
+        ["move the circle 100 px left, then rotate it 30 degrees clockwise and make it twice as big", None, "", "hand+minilm", True],
+        ["move the circle until it touches the square", None, "", "hand+minilm", True],
+        ["move the circle beside the square", None, "", "hand+minilm", True],
     ],
     title="DyoOptix: natural-language geometric edits",
-    description="Type an edit instruction and optionally upload an image. The model predicts translation, "
-                "rotation and scale and applies them to the whole image about its centre. "
+    description="Type an edit instruction and optionally upload an image. The model predicts translation, rotation "
+                "and scale. Name an object ('the cup') to edit only that object (the hole it leaves is filled in); "
+                "say 'the image' to edit the whole image; name nothing and the main object is edited. "
                 "Combined instructions are split into clauses, each predicted separately and then added up; "
-                "exact numbers in the text (degrees, pixels, percent, factors) are used as written. "
+                "exact numbers in the text (degrees, pixels, percent, factors) are used as written; "
+                "'until it touches', 'beside' and 'until the left edge' are measured from the photo itself. "
                 "The best overall model (hand features + MiniLM) is used automatically; "
                 "Advanced lets you compare other text representations and turn splitting off.",
 )

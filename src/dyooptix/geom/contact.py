@@ -32,13 +32,24 @@ def approach(mover, target, d, gap=0.0):
 
 
 def touch(mover_mask, target_mask, d=None):
-    """Move until touching. d: direction from the text, or None to head for the target's centre.
+    """Move until touching. d: direction from the text. With no direction the mover slides along the main axis
+    (horizontal or vertical, whichever centre distance is larger) so it stays on its surface; if the two share no
+    lane on that axis it heads straight for the target's centre.
     Returns (tx, ty) in px, or None if the target is not in that direction."""
     mover, target = pixels(mover_mask), pixels(target_mask)
-    if d is None:
-        d = (target[0].mean() - mover[0].mean(), target[1].mean() - mover[1].mean())
-    shift = approach(mover, target, d)
-    return None if shift is None or shift @ np.asarray(d, float) < 0 else tuple(shift)
+    if d is not None:
+        shift = approach(mover, target, d)
+        return None if shift is None or shift @ np.asarray(d, float) < 0 else tuple(shift)
+
+    dx, dy = target[0].mean() - mover[0].mean(), target[1].mean() - mover[1].mean()
+    if abs(dx) < 1e-9 and abs(dy) < 1e-9:
+        return None                                                # same centre: no direction to go in
+    axis = (np.sign(dx), 0.0) if abs(dx) >= abs(dy) else (0.0, np.sign(dy))
+    for direction in (axis, (dx, dy)):                             # main axis first, then straight at the centre
+        shift = approach(mover, target, direction)
+        if shift is not None and shift @ np.asarray(direction, float) >= 0:
+            return tuple(shift)
+    return None
 
 
 def beside(mover_mask, target_mask, side=None, gap_share=0.1):
@@ -78,7 +89,7 @@ def relation_shift(rel, mover_mask, target_mask, pred=None):
     Raises ValueError with a readable reason when the move is not possible."""
     if rel["kind"] == "beside":
         return beside(mover_mask, target_mask, rel["side"])
-    d = None                                                       # no direction word: head for the target
+    d = None                                                       # no direction word: slide toward the target
     if rel["kind"] == "edge" and (rel["side"] or not rel["has_direction"]):
         return to_edge(mover_mask, rel["side"])                    # named side, or the nearest one
     if rel["has_direction"]:

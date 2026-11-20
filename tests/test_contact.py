@@ -74,3 +74,7 @@ def test_weak_model_direction_with_one_word_stays_on_the_axis():
            "has_direction": True}
     tx, ty = relation_shift(rel, rect(100, 40, 119, 59), rect(20, 30, 39, 69), pred=[-0.086, 0.039, 1, 0, 0])
     assert np.isclose(tx, -60) and abs(ty) < 1e-9                  # left edge 100 -> 40, next to the square at 39
+
+def test_touch_without_direction_slides_along_the_main_axis():
+    tx, ty = touch(rect(10, 80, 29, 99), rect(60, 50, 79, 89))     # target is up and to the right, rows 80-89 shared
+    assert np.isclose(tx, 30) and abs(ty) < 1e-9                   # slides straight right, no lift

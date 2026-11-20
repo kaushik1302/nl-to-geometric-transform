@@ -117,7 +117,7 @@ def _whole(image, sentence, clauses, rep, note):
     angle = np.degrees(np.arctan2(p["sin"], p["cos"]))
     M = build_affine(p, (w / 2, h / 2), w)
     lines = _head(rep, sentence, clauses, probs, note)
-    lines += [f"Edited: the whole image",
+    lines += ["Edited: the whole image",
               f"Translation: tx = {p['tx'] * w:+.0f} px, ty = {p['ty'] * w:+.0f} px   (+x right, +y down)"
               + ("   [explicit pixels: real pixels of this image]" if explicit_px else ""),
               f"Rotation:    {angle:+.1f}°   (+ = counter-clockwise)",
@@ -144,5 +144,9 @@ def _object(image, sentence, clauses, rels, texts, found, label, rep, note, mark
               f"Rotation:    {info['deg']:+.1f}°   (+ = counter-clockwise)",
               f"Scale:       ×{info['s']:.2f}",
               f"Image size:  {w} × {h}"]
-    lines += [f"⚠ {warning}" for warning in info["warnings"]]
+    if "matrix" in info:                               # missing when nothing was left to edit
+        lines += [f"Affine matrix (2×3), turning and sizing about the object's centre "
+                  f"({info['centre'][0]:.0f}, {info['centre'][1]:.0f}):",
+                  np.array2string(info["matrix"], precision=2, suppress_small=True)]
+    lines += list(info["warnings"])
     return {"image": edited, "report": "\n".join(lines), "marks": marks, "mode": "object"}
