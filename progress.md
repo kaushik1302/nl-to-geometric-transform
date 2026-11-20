@@ -340,3 +340,13 @@
 - pipeline.run returns the final edit (params) and the edited object's name for scoring
 - eval_fresh.py scores Part A (whole image, 512 px) and Part B (object edits on the photos, clamped rows separate)
 - Rules fixed before scoring: "to n%" = n/100, "by n%" = 1 +/- n/100 with the label's direction; an edit counts as detected when it is non-zero in the final output
+
+
+## 2026-11-21 · Fresh test set scored once
+
+- Set: 100 whole-image sentences (Part A, 512 blank image) + 60 object-level sentences on 10 photos (Part B). Written by an LLM, scored once, nothing tuned afterwards.
+- Part A (hand+minilm): presence all right 0.970. Translate direction 0.683 (explicit median error 0 px). Rotate direction 1.000 (explicit 0°). Scale detected 0.94, direction 0.780.
+- Part B: right object found 58/58 (the 2 absent-object rows are correctly refused). Unclamped translate direction 0.696, rotate direction 1.0, scale direction 0.889. Clamped rows (18) reported separately.
+- Main failure causes: diagonal moves collapse onto one axis, "upward/upper" read as down, exact factor inverted when the model guesses shrink, no size word in the sentence, idioms or a missed scale clause, clamping changing the move.
+- Caveats: LLM-written set is optimistic; rules (snap, avoid, main-object thresholds) were added after seeing dev failures.
+- Files: data/human_fresh/, outputs/fresh_human_fresh_*.csv, src/dyooptix/models/eval_fresh.py.

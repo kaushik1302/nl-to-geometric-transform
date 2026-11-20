@@ -1,0 +1,7 @@
+clamped,kind,n,detected,direction_ok,explicit_n,explicit_median_error,vague_n,level_hit
+False,translate,24,0.9583333333333334,0.6666666666666666,10,0.0,14,0.7142857142857143
+False,rotate,14,1.0,1.0,10,0.0,4,0.75
+False,scale,10,0.9,0.8,6,0.0901239749954463,4,0.25
+True,scale,9,0.8888888888888888,0.8888888888888888,7,0.6199127620838414,2,0.5
+True,translate,10,1.0,0.7,8,119.5178644723143,2,1.0
+True,rotate,3,1.0,1.0,2,0.0,1,1.0

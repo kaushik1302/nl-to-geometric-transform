@@ -1,0 +1,61 @@
+﻿photo,instruction,object,move_direction,move_amount,rotate_direction,rotate_amount,resize_direction,resize_amount
+p01,Slide the laptop 35 px downward.,laptop,down,35,,,,
+p01,Give the laptop a little nudge up left.,laptop,up-left,small,,,,
+p01,Rotate the laptop by 15 degrees clockwise.,laptop,,,clockwise,15,,
+p01,Make the laptop 1.25 times its size.,laptop,,,,,bigger,1.25
+p02,Slide the kettle 60 px to the left.,kettle,left,60,,,,
+p02,Give the kettle a little nudge up right.,kettle,up-right,small,,,,
+p02,Turn the kettle slightly anticlockwise.,kettle,,,anticlockwise,small,,
+p02,Scale the kettle down to 0.8.,kettle,,,,,smaller,0.8
+p03,Slide the bicycle 85 px to the right.,bicycle,right,85,,,,
+p03,Give the bicycle a little nudge down left.,bicycle,down-left,small,,,,
+p03,Rotate the bicycle by 40 degrees clockwise.,bicycle,,,clockwise,40,,
+p03,Make the bicycle 1.5 times its size.,bicycle,,,,,bigger,1.5
+p04,Slide the dog 110 px up and to the left.,dog,up-left,110,,,,
+p04,Give the dog a little nudge down right.,dog,down-right,small,,,,
+p04,Turn the dog slightly anticlockwise.,dog,,,anticlockwise,small,,
+p04,Scale the dog down to 70%.,dog,,,,,smaller,70%
+p05,Slide the armchair 145 px up and to the right.,armchair,up-right,145,,,,
+p05,Give the armchair a little nudge up.,armchair,up,small,,,,
+p05,Rotate the armchair by 70 degrees clockwise.,armchair,,,clockwise,70,,
+p05,Make the armchair 2 times its size.,armchair,,,,,bigger,2
+p06,Slide the flower pot 175 px down and to the left.,flower pot,down-left,175,,,,
+p06,Give the flower pot a little nudge down.,flower pot,down,small,,,,
+p06,Turn the flower pot slightly anticlockwise.,flower pot,,,anticlockwise,small,,
+p06,Scale the flower pot down to 60%.,flower pot,,,,,smaller,60%
+p07,Slide the croissant 210 px down and to the right.,croissant,down-right,210,,,,
+p07,Give the croissant a little nudge left.,croissant,left,small,,,,
+p07,Rotate the croissant by 120 degrees clockwise.,croissant,,,clockwise,120,,
+p07,Make the croissant 1.75 times its size.,croissant,,,,,bigger,1.75
+p08,Slide the train 240 px upward.,train,up,240,,,,
+p08,Give the train a little nudge right.,train,right,small,,,,
+p08,Turn the train slightly anticlockwise.,train,,,anticlockwise,small,,
+p08,Scale the train down to 0.5.,train,,,,,smaller,0.5
+p09,Slide the cat 270 px downward.,cat,down,270,,,,
+p09,Give the cat a little nudge up left.,cat,up-left,small,,,,
+p09,Rotate the cat by 165 degrees clockwise.,cat,,,clockwise,165,,
+p09,Enlarge the cat by 130%.,cat,,,,,bigger,130%
+p10,Slide the umbrella 295 px to the left.,umbrella,left,295,,,,
+p10,Give the umbrella a little nudge up right.,umbrella,up-right,small,,,,
+p10,Turn the umbrella slightly anticlockwise.,umbrella,,,anticlockwise,small,,
+p10,Scale the umbrella down to 0.75.,umbrella,,,,,smaller,0.75
+p01,Move the mug 40 px left and turn it 20° clockwise.,mug,left,40,clockwise,20,,
+p02,Shift the cutting board up left a bit and make it bigger.,cutting board,up-left,small,,,bigger,medium
+p03,Move the car 75 px down left and turn it 35° clockwise.,car,down-left,75,clockwise,35,,
+p04,Shift the bench up a bit and make it smaller.,bench,up,small,,,smaller,medium
+p05,Move the floor lamp 130 px left and turn it 50° clockwise.,floor lamp,left,130,clockwise,50,,
+p06,Shift the watering can up left a bit and make it bigger.,watering can,up-left,small,,,bigger,medium
+p07,Move the glass 185 px down left and turn it 65° clockwise.,glass,down-left,185,clockwise,65,,
+p08,Shift the train up a bit and make it bigger.,train,up,small,,,bigger,medium
+p09,Move the cat 250 px left and turn it 80° clockwise.,cat,left,250,clockwise,80,,
+p10,Shift the umbrella up left a bit and make it smaller.,umbrella,up-left,small,,,smaller,medium
+p01,Move the bicycle a little right.,bicycle,right,small,,,,
+p03,Move the bicycle 85 px left.,bicycle,left,85,,,,
+p05,Rotate the armchair 45 degrees clockwise.,armchair,,,clockwise,45,,
+p08,Make the dog a little bigger.,dog,,,,,bigger,small
+p10,Turn the chair 30 degrees anticlockwise.,chair,,,anticlockwise,30,,
+p01,Push the laptop 450 pixels to the right.,laptop,right,450,,,,
+p02,Enlarge the kettle to 4x its current size.,kettle,,,,,bigger,4
+p04,Make the dog 4x bigger.,dog,,,,,bigger,4
+p06,Shift the flower pot 500 px down.,flower pot,down,500,,,,
+p09,Scale the cat up to 4x.,cat,,,,,bigger,4

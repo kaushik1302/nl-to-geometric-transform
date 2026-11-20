@@ -1,0 +1,71 @@
+line,instruction,kind,failed,detected,amount,pred_tx_px,pred_ty_px,pred_angle,pred_scale,direction_ok,error,amount_type,photo,object,found_object,object_ok,clamped,reason,level_hit
+2,Slide the laptop 35 px downward.,translate,False,True,35,2.1431318985078682e-15,35.0,0.0,1.0,True,0.0,explicit,p01,laptop,laptop,True,False,,
+3,Give the laptop a little nudge up left.,translate,False,True,small,-29.942300266669804,-29.942300266669807,0.0,1.0,True,,vague,p01,laptop,laptop,True,False,,1.0
+4,Rotate the laptop by 15 degrees clockwise.,rotate,False,True,15,0.0,0.0,-14.999999999999998,1.0,True,0.0,explicit,p01,laptop,laptop,True,False,,
+5,Make the laptop 1.25 times its size.,scale,False,True,1.25,0.0,0.0,0.0,0.8,False,0.4462871026284195,explicit,p01,laptop,laptop,True,False,,
+6,Slide the kettle 60 px to the left.,translate,False,True,60,-60.0,-7.34788079488412e-15,0.0,1.0,True,0.0,explicit,p02,kettle,kettle,True,False,,
+7,Give the kettle a little nudge up right.,translate,False,True,small,36.88332613273713,-36.88332613273713,0.0,1.0,True,,vague,p02,kettle,kettle,True,False,,1.0
+8,Turn the kettle slightly anticlockwise.,rotate,False,True,small,0.0,0.0,5.8463335287518,1.0,True,,vague,p02,kettle,kettle,True,False,,1.0
+9,Scale the kettle down to 0.8.,scale,False,True,0.8,0.0,0.0,0.0,0.8699954514209264,True,0.08387625571522594,explicit,p02,kettle,kettle,True,False,,
+10,Slide the bicycle 85 px to the right.,translate,False,True,85,85.0,0.0,0.0,1.0,True,0.0,explicit,p03,bicycle,bicycle,True,False,,
+11,Give the bicycle a little nudge down left.,translate,False,True,small,4.233877855046114e-15,69.1444726429515,0.0,1.0,False,,vague,p03,bicycle,bicycle,True,False,,0.0
+12,Rotate the bicycle by 40 degrees clockwise.,rotate,False,True,40,0.0,0.0,-40.0,1.0,True,0.0,explicit,p03,bicycle,bicycle,True,False,,
+13,Make the bicycle 1.5 times its size.,scale,False,True,1.5,1.4210854715202004e-14,0.0,0.0,1.4994860448018883,True,0.00034269551214105576,explicit,p03,bicycle,bicycle,True,True,,
+14,Slide the dog 110 px up and to the left.,translate,False,True,110,-24.0,-77.78174593052023,0.0,1.0,False,28.599754300125113,explicit,p04,dog,dog,True,True,,
+15,Give the dog a little nudge down right.,translate,False,True,small,2.977525946360807e-15,48.626688910367896,0.0,1.0,False,,vague,p04,dog,dog,True,False,,1.0
+16,Turn the dog slightly anticlockwise.,rotate,False,True,small,0.0,0.0,5.747213187183635,1.0,True,,vague,p04,dog,dog,True,False,,1.0
+17,Scale the dog down to 70%.,scale,False,True,0.7,1.3913289359273156e-14,218.3547016517822,0.0,0.7,True,0.0,explicit,p04,dog,dog,True,True,,
+18,Slide the armchair 145 px up and to the right.,translate,False,True,145,102.5304832720494,-102.5304832720494,0.0,1.0,True,0.0,explicit,p05,armchair,armchair,True,False,,
+19,Give the armchair a little nudge up.,translate,False,True,small,2.3706539517954976e-15,-38.715717110370754,0.0,1.0,True,,vague,p05,armchair,armchair,True,False,,1.0
+20,Rotate the armchair by 70 degrees clockwise.,rotate,False,True,70,0.0,0.0,-70.0,1.0,True,0.0,explicit,p05,armchair,armchair,True,False,,
+21,Make the armchair 2 times its size.,scale,False,True,2,0.0,0.0,0.0,1.679113662571522,True,0.1748811081676913,explicit,p05,armchair,armchair,True,True,,
+22,Slide the flower pot 175 px down and to the left.,translate,False,True,175,1.071565949253934e-14,175.0,0.0,1.0,False,0.0,explicit,p06,flower pot,flower pot,True,False,,
+23,Give the flower pot a little nudge down.,translate,False,True,small,1.8091061650651175e-15,29.544945797019803,0.0,1.0,True,,vague,p06,flower pot,flower pot,True,False,,1.0
+24,Turn the flower pot slightly anticlockwise.,rotate,False,True,small,0.0,0.0,5.54515445554285,1.0,True,,vague,p06,flower pot,flower pot,True,False,,1.0
+25,Scale the flower pot down to 60%.,scale,False,True,0.6,7.241129764516242e-15,118.25662337186196,0.0,0.6,True,0.0,explicit,p06,flower pot,flower pot,True,False,,
+26,Slide the croissant 210 px down and to the right.,translate,False,True,210,-148.49242404917493,148.49242404917499,0.0,1.0,False,2.842170943040401e-14,explicit,p07,croissant,croissant,True,False,,
+27,Give the croissant a little nudge left.,translate,False,True,small,-38.51931023251788,-4.717254998161691e-15,0.0,1.0,True,,vague,p07,croissant,croissant,True,False,,1.0
+28,Rotate the croissant by 120 degrees clockwise.,rotate,False,True,120,0.0,0.0,-119.99999999999999,1.0,True,0.0,explicit,p07,croissant,croissant,True,False,,
+29,Make the croissant 1.75 times its size.,scale,False,True,1.75,0.0,0.0,0.0,1.75,True,0.0,explicit,p07,croissant,croissant,True,False,,
+30,Slide the train 240 px upward.,translate,False,True,240,1.469576158976824e-14,240.0,0.0,1.0,False,0.0,explicit,p08,train,train,True,False,,
+31,Give the train a little nudge right.,translate,False,True,small,23.78259344084059,0.0,0.0,1.0,True,,vague,p08,train,train,True,False,,0.0
+32,Turn the train slightly anticlockwise.,rotate,False,True,small,2.4304923431665486,0.0,7.815233442283391,1.0,True,,vague,p08,train,train,True,True,,1.0
+33,Scale the train down to 0.5.,scale,False,True,0.5,0.0,0.0,0.0,0.9689886096134565,True,0.6616447586146118,explicit,p08,train,train,True,False,,
+34,Slide the cat 270 px downward.,translate,False,True,270,1.6532731788489267e-14,98.0,0.0,1.0,True,172.0,explicit,p09,cat,cat,True,True,,
+35,Give the cat a little nudge up left.,translate,False,True,small,-22.30758316093006,-22.307583160930065,0.0,1.0,True,,vague,p09,cat,cat,True,False,,1.0
+36,Rotate the cat by 165 degrees clockwise.,rotate,False,True,165,0.0,0.0,-165.0,1.0,True,0.0,explicit,p09,cat,cat,True,False,,
+37,Enlarge the cat by 130%.,scale,False,True,2.3,0.0,0.0,0.0,1.2373801482250029,True,0.6199127620838414,explicit,p09,cat,cat,True,True,,
+38,Slide the umbrella 295 px to the left.,translate,False,True,295,-217.0,3.612708057484692e-14,0.0,1.0,True,78.0,explicit,p10,umbrella,umbrella,True,True,,
+39,Give the umbrella a little nudge up right.,translate,False,True,small,29.44845334844325,-29.44845334844325,0.0,1.0,True,,vague,p10,umbrella,umbrella,True,False,,1.0
+40,Turn the umbrella slightly anticlockwise.,rotate,False,True,small,0.0,0.0,9.256666472524476,1.0,True,,vague,p10,umbrella,umbrella,True,False,,0.0
+41,Scale the umbrella down to 0.75.,scale,False,True,0.75,0.0,0.0,0.0,0.6810948059562565,True,0.09637169427566666,explicit,p10,umbrella,umbrella,True,False,,
+42,Move the mug 40 px left and turn it 20° clockwise.,translate,False,True,40,-40.0,-4.898587196589413e-15,-20.0,1.0,True,0.0,explicit,p01,mug,mug,True,False,,
+42,Move the mug 40 px left and turn it 20° clockwise.,rotate,False,True,20,-40.0,-4.898587196589413e-15,-20.0,1.0,True,0.0,explicit,p01,mug,mug,True,False,,
+43,Shift the cutting board up left a bit and make it bigger.,translate,False,True,small,-26.88554324108912,1.8947806286936004e-14,0.0,1.4061485647223568,False,,vague,p02,cutting board,cutting board,True,True,,1.0
+43,Shift the cutting board up left a bit and make it bigger.,scale,False,True,medium,-26.88554324108912,1.8947806286936004e-14,0.0,1.4061485647223568,True,,vague,p02,cutting board,cutting board,True,True,,1.0
+44,Move the car 75 px down left and turn it 35° clockwise.,translate,False,True,75,-53.03300858899105,53.033008588991066,-35.0,1.0,True,1.4210854715202004e-14,explicit,p03,car,car,True,False,,
+44,Move the car 75 px down left and turn it 35° clockwise.,rotate,False,True,35,-53.03300858899105,53.033008588991066,-35.0,1.0,True,0.0,explicit,p03,car,car,True,False,,
+45,Shift the bench up a bit and make it smaller.,translate,False,True,small,6.952485566006293e-15,-113.54270587808476,0.0,0.9755405870705602,True,,vague,p04,bench,bench,True,False,,0.0
+45,Shift the bench up a bit and make it smaller.,scale,False,True,medium,6.952485566006293e-15,-113.54270587808476,0.0,0.9755405870705602,True,,vague,p04,bench,bench,True,False,,0.0
+46,Move the floor lamp 130 px left and turn it 50° clockwise.,translate,False,True,130,5.964271055371398,1.592040838891559e-14,-50.0,1.0,False,124.0357289446286,explicit,p05,floor lamp,floor lamp,True,True,,
+46,Move the floor lamp 130 px left and turn it 50° clockwise.,rotate,False,True,50,5.964271055371398,1.592040838891559e-14,-50.0,1.0,True,0.0,explicit,p05,floor lamp,floor lamp,True,True,,
+47,Shift the watering can up left a bit and make it bigger.,translate,False,True,small,2.4157860613746446e-15,-39.45278039442245,0.0,1.4108201839589616,False,,vague,p06,watering can,watering can,True,False,,1.0
+47,Shift the watering can up left a bit and make it bigger.,scale,False,True,medium,2.4157860613746446e-15,-39.45278039442245,0.0,1.4108201839589616,True,,vague,p06,watering can,watering can,True,False,,1.0
+48,Move the glass 185 px down left and turn it 65° clockwise.,translate,False,True,185,1.1327982892113015e-14,185.0,-65.0,1.0,False,0.0,explicit,p07,glass,glass,True,False,,
+48,Move the glass 185 px down left and turn it 65° clockwise.,rotate,False,True,65,1.1327982892113015e-14,185.0,-65.0,1.0,True,0.0,explicit,p07,glass,glass,True,False,,
+49,Shift the train up a bit and make it bigger.,translate,False,True,small,3.879383511590465e-15,-63.35514067062345,0.0,1.0,True,,vague,p08,train,train,True,True,,1.0
+49,Shift the train up a bit and make it bigger.,scale,False,False,medium,3.879383511590465e-15,-63.35514067062345,0.0,1.0,False,,vague,p08,train,train,True,True,,0.0
+50,Move the cat 250 px left and turn it 80° clockwise.,translate,False,True,250,-10.148092001237956,3.061616997868383e-14,-80.0,1.0,True,239.85190799876204,explicit,p09,cat,cat,True,True,,
+50,Move the cat 250 px left and turn it 80° clockwise.,rotate,False,True,80,-10.148092001237956,3.061616997868383e-14,-80.0,1.0,True,0.0,explicit,p09,cat,cat,True,True,,
+51,Shift the umbrella up left a bit and make it smaller.,translate,False,True,small,-38.59229631482704,-38.59229631482704,0.0,0.9755405870705602,True,,vague,p10,umbrella,umbrella,True,False,,1.0
+51,Shift the umbrella up left a bit and make it smaller.,scale,False,True,medium,-38.59229631482704,-38.59229631482704,0.0,0.9755405870705602,True,,vague,p10,umbrella,umbrella,True,False,,0.0
+52,Move the bicycle a little right.,translate,True,False,small,0.0,0.0,0.0,1.0,False,,vague,p01,bicycle,,False,False,"Couldn't find 'bicycle' in the photo (best match 0.06, needs 0.30). Try another word in the Object box, or leave the object out to edit the whole image.",0.0
+53,Move the bicycle 85 px left.,translate,False,True,85,-57.0,1.0409497792752502e-14,0.0,1.0,True,28.0,explicit,p03,bicycle,bicycle,True,True,,
+54,Rotate the armchair 45 degrees clockwise.,rotate,False,True,45,0.0,0.0,-45.0,1.0,True,0.0,explicit,p05,armchair,armchair,True,False,,
+55,Make the dog a little bigger.,scale,True,False,small,0.0,0.0,0.0,1.0,False,,vague,p08,dog,,False,False,"Couldn't find 'dog' in the photo (best match 0.13, needs 0.30). Try another word in the Object box, or leave the object out to edit the whole image.",0.0
+56,Turn the chair 30 degrees anticlockwise.,rotate,False,True,30,0.0,0.0,29.999999999999996,1.0,True,0.0,explicit,p10,chair,chair,True,False,,
+57,Push the laptop 450 pixels to the right.,translate,False,True,450,335.0,0.0,0.0,1.0,True,115.0,explicit,p01,laptop,laptop,True,True,,
+58,Enlarge the kettle to 4x its current size.,scale,False,True,4,0.0,0.0,0.0,2.1016816878021496,True,0.6435565331474203,explicit,p02,kettle,kettle,True,True,,
+59,Make the dog 4x bigger.,scale,False,True,4,0.0,0.0,0.0,1.1536722450230044,True,1.2433442498188285,explicit,p04,dog,dog,True,True,,
+60,Shift the flower pot 500 px down.,translate,False,True,500,3.061616997868383e-14,233.0,0.0,1.0,True,267.0,explicit,p06,flower pot,flower pot,True,True,,
+61,Scale the cat up to 4x.,scale,False,True,4,0.0,0.0,0.0,1.2373801482250029,True,1.1732980002686282,explicit,p09,cat,cat,True,True,,

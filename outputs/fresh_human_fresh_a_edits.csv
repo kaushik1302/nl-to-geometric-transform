@@ -1,0 +1,161 @@
+line,instruction,kind,failed,detected,amount,pred_tx_px,pred_ty_px,pred_angle,pred_scale,direction_ok,error,amount_type,level_hit
+2,Shift the whole picture 260 px down and to the right.,translate,False,True,260,1.592040838891559e-14,260.0,0.0,1.0,False,0.0,explicit,
+3,Move it 18 pixels right.,translate,False,True,18,18.0,0.0,0.0,1.0,True,0.0,explicit,
+4,Can you nudge the image up left by 290 pixels?,translate,False,True,290,1.7757378587636622e-14,-290.0,0.0,1.0,False,0.0,explicit,
+5,Slide the picture 120 px toward the lower right.,translate,False,True,120,84.8528137423857,84.8528137423857,0.0,1.0,True,1.4210854715202004e-14,explicit,
+6,"Push the image up, about 95 pixels.",translate,False,True,95,7.0946797108578906e-15,-115.86491249227913,0.0,1.0,True,20.86491249227913,explicit,
+7,Shift the whole picture 48 px upward.,translate,False,True,48,2.9391523179536475e-15,48.0,0.0,1.0,False,0.0,explicit,
+8,Move it 18 pixels up left.,translate,False,True,18,-12.727922061357855,-12.727922061357857,0.0,1.0,True,0.0,explicit,
+9,Can you nudge the image down right by 260 pixels?,translate,False,True,260,1.592040838891559e-14,260.0,0.0,1.0,False,0.0,explicit,
+10,Slide the picture 95 px upwardper right.,translate,False,True,95,67.17514421272202,67.17514421272202,0.0,1.0,False,0.0,explicit,
+11,"Push the image right, about 18 pixels.",translate,False,True,18,103.30366189551351,0.0,0.0,1.0,True,85.30366189551351,explicit,
+12,Give the picture a small nudge right.,translate,False,True,small,35.25776460896686,0.0,0.0,1.0,True,,vague,1.0
+13,Shift it up left slightly.,translate,False,True,small,-32.719945440312465,-32.71994544031247,0.0,1.0,True,,vague,1.0
+14,The whole image needs to move a bit upwardper right.,translate,False,True,small,17.93901855724098,17.93901855724098,0.0,1.0,False,,vague,0.0
+15,Slide everything down left just a touch.,translate,False,True,small,7.809958693344357e-15,127.54630475957563,0.0,1.0,False,,vague,0.0
+16,Move the picture over down and to the right just quite a bit.,translate,False,True,medium,3.231271448192659e-15,52.77066743558054,0.0,1.0,False,,vague,1.0
+17,Give the picture a small nudge up.,translate,False,True,medium,2.506593674518845e-15,-40.935781259772746,0.0,1.0,True,,vague,0.0
+18,Shift it down a tiny amount.,translate,False,True,medium,4.530257250006196e-15,73.98471548139982,0.0,1.0,True,,vague,1.0
+19,The whole image needs to move noticeably toward the left.,translate,False,True,medium,-110.47090385959257,1.3528783881056502e-14,0.0,1.0,True,,vague,1.0
+20,Slide everything right a good bit.,translate,False,True,large,50.682149811879725,0.0,0.0,1.0,True,,vague,0.0
+21,Move the picture over up and to the left just gently.,translate,False,True,large,-47.878576225087,-47.87857622508701,0.0,1.0,True,,vague,0.0
+22,Turn the whole image 12 degrees clockwise.,rotate,False,True,12,0.0,0.0,-11.999999999999996,1.0,True,0.0,explicit,
+23,Give the picture a 25-degree anticlockwise turn.,rotate,False,True,25,0.0,0.0,25.0,1.0,True,0.0,explicit,
+24,Rotate everything by 38° clockwise.,rotate,False,True,38,0.0,0.0,-38.0,1.0,True,0.0,explicit,
+25,Tip the image anticlockwise through 55 degrees.,rotate,False,True,55,0.0,0.0,55.00000000000001,1.0,True,0.0,explicit,
+26,Spin the picture 70 degrees clockwise.,rotate,False,True,70,0.0,0.0,-70.0,1.0,True,0.0,explicit,
+27,Turn the whole image 88 degrees anticlockwise.,rotate,False,True,88,0.0,0.0,88.0,1.0,True,0.0,explicit,
+28,Give the picture a 105-degree clockwise turn.,rotate,False,True,105,0.0,0.0,-105.00000000000001,1.0,True,0.0,explicit,
+29,Rotate everything by 132° anticlockwise.,rotate,False,True,132,0.0,0.0,132.0,1.0,True,0.0,explicit,
+30,Tip the image clockwise through 160 degrees.,rotate,False,True,160,0.0,0.0,-160.0,1.0,True,0.0,explicit,
+31,Spin the picture 178 degrees anticlockwise.,rotate,False,True,178,0.0,0.0,178.0,1.0,True,0.0,explicit,
+32,Give the picture a gentle clockwise twist.,rotate,False,True,small,0.0,0.0,-14.6663598277337,1.0,True,,vague,0.0
+33,Turn the whole thing a little anticlockwise.,rotate,False,True,small,0.0,0.0,7.614051867187371,1.0,True,,vague,1.0
+34,The image could use a slight clockwise tilt.,rotate,False,True,medium,0.0,0.0,-18.105248023806087,1.0,True,,vague,1.0
+35,Rotate it just a bit anticlockwise.,rotate,False,True,small,0.0,0.0,7.319387653436891,1.0,True,,vague,1.0
+36,Add a small clockwise turn to the picture.,rotate,False,True,large,0.0,0.0,-10.27660224005043,1.0,True,,vague,0.0
+37,Make the whole picture 1.25 times bigger.,scale,False,True,1.25,0.0,0.0,0.0,1.25,True,0.0,explicit,
+38,Scale the image to 75% of its size.,scale,False,True,0.75,0.0,0.0,0.0,0.75,True,0.0,explicit,
+39,Make the whole picture twice as large.,scale,False,True,2,0.0,0.0,0.0,2.0,True,0.0,explicit,
+40,Scale the image to half its size.,scale,False,True,0.5,0.0,0.0,0.0,0.5,True,0.0,explicit,
+41,Make the whole picture by 35%.,scale,False,True,1.35,0.0,0.0,0.0,0.65,False,0.7308875085427924,explicit,
+42,Scale the image by 25%.,scale,False,True,0.75,0.0,0.0,0.0,1.25,False,0.5108256237659907,explicit,
+43,Make the whole picture three times the size.,scale,False,True,3,0.0,0.0,0.0,1.374374689362681,True,0.7806134323620337,explicit,
+44,Scale the image to 0.8x.,scale,False,True,0.8,0.0,0.0,0.0,0.8,True,0.0,explicit,
+45,Make the whole picture by 150%.,scale,False,True,2.5,0.0,0.0,0.0,2.5,True,0.0,explicit,
+46,Scale the image to 60%.,scale,False,True,0.6,0.0,0.0,0.0,0.6,True,0.0,explicit,
+47,Make the image a little larger.,scale,False,True,small,0.0,0.0,0.0,1.0784521017321587,True,,vague,0.0
+48,Shrink the whole picture just a touch.,scale,False,True,small,0.0,0.0,0.0,0.7632581902166333,True,,vague,0.0
+49,Give everything a more noticeable size boost.,scale,False,True,medium,0.0,0.0,0.0,1.6852170951408891,True,,vague,0.0
+50,Scale the image down quite a bit.,scale,False,True,large,0.0,0.0,0.0,0.8988476770027819,True,,vague,0.0
+51,Blow the picture up quite a lot.,scale,False,False,large,0.0,0.0,0.0,1.0,False,,vague,0.0
+52,"Move it down by 24 px, then turn it 15° clockwise.",translate,False,True,24,1.4695761589768238e-15,24.0,-14.999999999999998,1.0,True,0.0,explicit,
+52,"Move it down by 24 px, then turn it 15° clockwise.",rotate,False,True,15,1.4695761589768238e-15,24.0,-14.999999999999998,1.0,True,0.0,explicit,
+53,Shift the image 65 pixels up left and give it a 32-degree anticlockwise turn.,translate,False,True,65,-45.961940777125584,-45.96194077712559,32.0,1.0,True,0.0,explicit,
+53,Shift the image 65 pixels up left and give it a 32-degree anticlockwise turn.,rotate,False,True,32,-45.961940777125584,-45.96194077712559,32.0,1.0,True,0.0,explicit,
+54,Slide everything down right 110 px; rotate the picture 48 degrees clockwise.,translate,False,True,110,6.735557395310443e-15,110.0,-77.17557247836879,1.0,False,0.0,explicit,
+54,Slide everything down right 110 px; rotate the picture 48 degrees clockwise.,rotate,False,True,48,6.735557395310443e-15,110.0,-77.17557247836879,1.0,True,29.175572478368792,explicit,
+55,Push the whole image 175 px toward left and tilt it anticlockwise by 75°.,translate,False,True,175,-175.0,2.1431318985078682e-14,75.0,1.0,True,0.0,explicit,
+55,Push the whole image 175 px toward left and tilt it anticlockwise by 75°.,rotate,False,True,75,-175.0,2.1431318985078682e-14,75.0,1.0,True,0.0,explicit,
+56,Move it 245 px up right and spin it 115 degrees clockwise.,translate,False,True,245,173.24116139070415,-173.24116139070415,-115.0,1.0,True,2.842170943040401e-14,explicit,
+56,Move it 245 px up right and spin it 115 degrees clockwise.,rotate,False,True,115,173.24116139070415,-173.24116139070415,-115.0,1.0,True,0.0,explicit,
+57,Nudge it up and give it a slight anticlockwise turn.,translate,False,True,large,6.559123462484168e-15,-107.11861521298852,13.603065056947424,1.0,True,,vague,1.0
+57,Nudge it up and give it a slight anticlockwise turn.,rotate,False,True,large,6.559123462484168e-15,-107.11861521298852,13.603065056947424,1.0,True,,vague,0.0
+58,Shift the picture a little right; twist it gently clockwise.,translate,False,True,small,89.26184203065239,0.0,-16.745286111733556,1.0,True,,vague,0.0
+58,Shift the picture a little right; twist it gently clockwise.,rotate,False,True,small,89.26184203065239,0.0,-16.745286111733556,1.0,True,,vague,0.0
+59,Move everything down left a bit and rotate it anticlockwise a touch.,translate,False,True,medium,-35.555393422998534,35.55539342299854,14.081365626469324,1.0,True,,vague,0.0
+59,Move everything down left a bit and rotate it anticlockwise a touch.,rotate,False,True,medium,-35.555393422998534,35.55539342299854,14.081365626469324,1.0,True,,vague,1.0
+60,"Slide it down slightly, then turn it clockwise a little.",translate,False,True,large,4.1847032169892506e-15,68.34138985873811,-8.321206650954016,1.0,True,,vague,0.0
+60,"Slide it down slightly, then turn it clockwise a little.",rotate,False,True,large,4.1847032169892506e-15,68.34138985873811,-8.321206650954016,1.0,True,,vague,0.0
+61,Give the image a up left nudge and a mild anticlockwise tilt.,translate,False,True,small,-57.719700466135315,-57.71970046613532,24.071778524640415,1.0,True,,vague,0.0
+61,Give the image a up left nudge and a mild anticlockwise tilt.,rotate,False,True,small,-57.719700466135315,-57.71970046613532,24.071778524640415,1.0,True,,vague,0.0
+62,Shift it 24 px down right and add a tiny clockwise twist.,translate,False,True,24,1.4695761589768238e-15,24.0,-8.446908423710093,1.0,False,0.0,explicit,
+62,Shift it 24 px down right and add a tiny clockwise twist.,rotate,False,True,small,1.4695761589768238e-15,24.0,-8.446908423710093,1.0,True,,vague,1.0
+63,"Move the image left by 65 pixels, with a slight anticlockwise tilt.",translate,False,True,65,-65.0,7.960204194457796e-15,16.258398663217502,1.0,True,0.0,explicit,
+63,"Move the image left by 65 pixels, with a slight anticlockwise tilt.",rotate,False,True,small,-65.0,7.960204194457796e-15,16.258398663217502,1.0,True,,vague,0.0
+64,Slide everything 110 px toward the upper right and turn it a bit clockwise.,translate,False,True,110,6.735557395310443e-15,110.0,-6.703876767855621,1.0,False,0.0,explicit,
+64,Slide everything 110 px toward the upper right and turn it a bit clockwise.,rotate,False,True,small,6.735557395310443e-15,110.0,-6.703876767855621,1.0,True,,vague,1.0
+65,"Push it up 175 px, then give it a gentle anticlockwise turn.",translate,False,True,175,1.0715659492539341e-14,-175.0,16.197252562164326,1.0,True,0.0,explicit,
+65,"Push it up 175 px, then give it a gentle anticlockwise turn.",rotate,False,True,small,1.0715659492539341e-14,-175.0,16.197252562164326,1.0,True,,vague,0.0
+66,Move the picture 245 pixels right and rotate it slightly clockwise.,translate,False,True,245,245.0,0.0,-7.021769555615884,1.0,True,0.0,explicit,
+66,Move the picture 245 pixels right and rotate it slightly clockwise.,rotate,False,True,small,245.0,0.0,-7.021769555615884,1.0,True,,vague,1.0
+67,Move the picture 30 px left and scale it 1.2x.,translate,False,True,30,-30.0,-3.67394039744206e-15,0.0,1.2,True,0.0,explicit,
+67,Move the picture 30 px left and scale it 1.2x.,scale,False,True,1.2,-30.0,-3.67394039744206e-15,0.0,1.2,True,0.0,explicit,
+68,"Shift everything down right by 75 pixels, then make it 0.7 times its size.",translate,False,True,75,4.592425496802574e-15,75.0,0.0,0.7,False,0.0,explicit,
+68,"Shift everything down right by 75 pixels, then make it 0.7 times its size.",scale,False,True,0.7,4.592425496802574e-15,75.0,0.0,0.7,True,0.0,explicit,
+69,Slide it 125 px toward the upper left and resize it to 1.5x.,translate,False,True,125,-88.38834764831843,88.38834764831844,0.0,1.5,False,0.0,explicit,
+69,Slide it 125 px toward the upper left and resize it to 1.5x.,scale,False,True,1.5,-88.38834764831843,88.38834764831844,0.0,1.5,True,0.0,explicit,
+70,Push the image down 190 px and change its size by a factor of 0.5.,translate,False,True,190,1.1634144591899855e-14,190.0,0.0,0.5,True,0.0,explicit,
+70,Push the image down 190 px and change its size by a factor of 0.5.,scale,False,True,0.5,1.1634144591899855e-14,190.0,0.0,0.5,True,0.0,explicit,
+71,Move it 275 pixels down left and set the scale to 2x.,translate,False,True,275,1.6838893488276108e-14,275.0,0.0,2.0,False,0.0,explicit,
+71,Move it 275 pixels down left and set the scale to 2x.,scale,False,True,2,1.6838893488276108e-14,275.0,0.0,2.0,True,0.0,explicit,
+72,Nudge the whole picture right and make it a little smaller.,translate,False,True,large,90.3558313571026,0.0,0.0,0.9939368890779356,True,,vague,0.0
+72,Nudge the whole picture right and make it a little smaller.,scale,False,True,small,90.3558313571026,0.0,0.0,0.9939368890779356,True,,vague,0.0
+73,Shift it slightly up; give it a modest size change.,translate,False,True,small,1.788797870116139e-15,-29.21328617135275,0.0,0.9809543082806526,True,,vague,1.0
+73,Shift it slightly up; give it a modest size change.,scale,False,True,medium,1.788797870116139e-15,-29.21328617135275,0.0,0.9809543082806526,False,,vague,0.0
+74,Move everything up right a bit and shrink it a touch.,translate,False,True,medium,28.023801568738243,-28.023801568738243,0.0,0.6342866946944103,True,,vague,0.0
+74,Move everything up right a bit and shrink it a touch.,scale,False,True,large,28.023801568738243,-28.023801568738243,0.0,0.6342866946944103,True,,vague,1.0
+75,Slide it left gently and make the picture noticeably bigger.,translate,False,True,large,-67.03617439415702,8.209563639888815e-15,0.0,1.5886375103085695,True,,vague,0.0
+75,Slide it left gently and make the picture noticeably bigger.,scale,False,True,small,-67.03617439415702,8.209563639888815e-15,0.0,1.5886375103085695,True,,vague,0.0
+76,"Give the image a down right nudge, then scale it smaller quite a bit.",translate,False,True,small,6.095950001145778e-15,99.55441855382328,0.0,0.9564901976864523,False,,vague,0.0
+76,"Give the image a down right nudge, then scale it smaller quite a bit.",scale,False,True,medium,6.095950001145778e-15,99.55441855382328,0.0,0.9564901976864523,True,,vague,0.0
+77,Move it 30 px up left and make it a little bigger.,translate,False,True,30,1.83697019872103e-15,-30.0,0.0,1.1467688105119076,False,0.0,explicit,
+77,Move it 30 px up left and make it a little bigger.,scale,False,True,small,1.83697019872103e-15,-30.0,0.0,1.1467688105119076,True,,vague,1.0
+78,"Shift the image down by 75 pixels, then slightly smaller it.",translate,False,True,75,4.592425496802574e-15,75.0,0.0,1.033066845868881,True,0.0,explicit,
+78,"Shift the image down by 75 pixels, then slightly smaller it.",scale,False,True,small,4.592425496802574e-15,75.0,0.0,1.033066845868881,False,,vague,0.0
+79,Slide it 125 px toward the lower left and give it a gentle size change.,translate,False,True,125,7.654042494670958e-15,125.0,0.0,1.151578924999643,False,0.0,explicit,
+79,Slide it 125 px toward the lower left and give it a gentle size change.,scale,False,True,small,7.654042494670958e-15,125.0,0.0,1.151578924999643,True,,vague,1.0
+80,Push the picture right 190 px and make it a bit smaller.,translate,False,True,190,190.0,0.0,0.0,0.9984129608102136,True,0.0,explicit,
+80,Push the picture right 190 px and make it a bit smaller.,scale,False,False,small,190.0,0.0,0.0,0.9984129608102136,False,,vague,0.0
+81,Move everything 275 pixels up and scale it just a touch bigger.,translate,False,True,275,1.6838893488276108e-14,-275.0,0.0,1.4750800465206388,True,0.0,explicit,
+81,Move everything 275 pixels up and scale it just a touch bigger.,scale,False,True,small,1.6838893488276108e-14,-275.0,0.0,1.4750800465206388,True,,vague,0.0
+82,Turn the picture 20 degrees clockwise and scale it to 1.25x.,rotate,False,True,20,0.0,0.0,-20.0,0.8,True,0.0,explicit,
+82,Turn the picture 20 degrees clockwise and scale it to 1.25x.,scale,False,True,1.25,0.0,0.0,-20.0,0.8,False,0.4462871026284195,explicit,
+83,"Rotate the whole image by 45° anticlockwise, then make it 0.8 times the size.",rotate,False,True,45,0.0,0.0,45.0,0.8,True,0.0,explicit,
+83,"Rotate the whole image by 45° anticlockwise, then make it 0.8 times the size.",scale,False,True,0.8,0.0,0.0,45.0,0.8,True,0.0,explicit,
+84,Give it a 80-degree clockwise turn and resize it by a factor of 2.,rotate,False,True,80,0.0,0.0,-80.0,2.0,True,0.0,explicit,
+84,Give it a 80-degree clockwise turn and resize it by a factor of 2.,scale,False,True,2,0.0,0.0,-80.0,2.0,True,0.0,explicit,
+85,Spin the image 125 degrees anticlockwise and set its scale to 0.5x.,rotate,False,True,125,0.0,0.0,125.00000000000001,0.5,True,0.0,explicit,
+85,Spin the image 125 degrees anticlockwise and set its scale to 0.5x.,scale,False,True,0.5,0.0,0.0,125.00000000000001,0.5,True,0.0,explicit,
+86,Rotate everything 170° clockwise and change the size to 1.5x.,rotate,False,True,170,0.0,0.0,-170.0,1.5,True,0.0,explicit,
+86,Rotate everything 170° clockwise and change the size to 1.5x.,scale,False,True,1.5,0.0,0.0,-170.0,1.5,True,0.0,explicit,
+87,Give the picture a slight anticlockwise turn and make it a little smaller.,rotate,False,True,small,0.0,0.0,14.281257146123032,0.9939368890779356,True,,vague,0.0
+87,Give the picture a slight anticlockwise turn and make it a little smaller.,scale,False,True,small,0.0,0.0,14.281257146123032,0.9939368890779356,True,,vague,0.0
+88,Rotate it gently clockwise and enlarge it a touch.,rotate,False,True,medium,0.0,0.0,-12.599879997799297,1.4460450673687526,True,,vague,1.0
+88,Rotate it gently clockwise and enlarge it a touch.,scale,False,True,medium,0.0,0.0,-12.599879997799297,1.4460450673687526,True,,vague,1.0
+89,"Add a mild anticlockwise tilt, then change the image size just a bit.",rotate,False,True,large,0.0,0.0,22.124278539438876,1.0568290464908912,True,,vague,1.0
+89,"Add a mild anticlockwise tilt, then change the image size just a bit.",scale,False,True,large,0.0,0.0,22.124278539438876,1.0568290464908912,False,,vague,0.0
+90,Turn everything a little clockwise and make the whole thing noticeably bigger.,rotate,False,True,small,0.0,0.0,-13.607433798404408,1.3768788186102743,True,,vague,0.0
+90,Turn everything a little clockwise and make the whole thing noticeably bigger.,scale,False,True,small,0.0,0.0,-13.607433798404408,1.3768788186102743,True,,vague,0.0
+91,Give it a soft anticlockwise twist and scale it smaller slightly.,rotate,False,True,medium,0.0,0.0,21.980567416998678,0.8927291261754114,True,,vague,0.0
+91,Give it a soft anticlockwise twist and scale it smaller slightly.,scale,False,True,medium,0.0,0.0,21.980567416998678,0.8927291261754114,True,,vague,0.0
+92,"Shift it 45 px right, rotate 18° clockwise, and scale it to 1.2x.",translate,False,True,45,45.0,0.0,-18.0,1.2,True,0.0,explicit,
+92,"Shift it 45 px right, rotate 18° clockwise, and scale it to 1.2x.",rotate,False,True,18,45.0,0.0,-18.0,1.2,True,0.0,explicit,
+92,"Shift it 45 px right, rotate 18° clockwise, and scale it to 1.2x.",scale,False,True,1.2,45.0,0.0,-18.0,1.2,True,0.0,explicit,
+93,"Move the image up right by 90 pixels, turn it 42 degrees anticlockwise, then resize to 0.75x.",translate,False,True,90,63.63961030678928,-63.63961030678928,42.0,0.75,True,0.0,explicit,
+93,"Move the image up right by 90 pixels, turn it 42 degrees anticlockwise, then resize to 0.75x.",rotate,False,True,42,63.63961030678928,-63.63961030678928,42.0,0.75,True,0.0,explicit,
+93,"Move the image up right by 90 pixels, turn it 42 degrees anticlockwise, then resize to 0.75x.",scale,False,True,0.75,63.63961030678928,-63.63961030678928,42.0,0.75,True,0.0,explicit,
+94,"Slide everything 145 px toward the lower right, give it a 75-degree clockwise turn, and make it 1.5x.",translate,False,True,145,102.5304832720494,102.5304832720494,-75.0,1.5,True,0.0,explicit,
+94,"Slide everything 145 px toward the lower right, give it a 75-degree clockwise turn, and make it 1.5x.",rotate,False,True,75,102.5304832720494,102.5304832720494,-75.0,1.5,True,0.0,explicit,
+94,"Slide everything 145 px toward the lower right, give it a 75-degree clockwise turn, and make it 1.5x.",scale,False,True,1.5,102.5304832720494,102.5304832720494,-75.0,1.5,True,0.0,explicit,
+95,"Push it down 205 px, spin it 110° anticlockwise, and set the size to 0.5x.",translate,False,True,205,1.255262969126037e-14,205.0,110.0,0.5,True,0.0,explicit,
+95,"Push it down 205 px, spin it 110° anticlockwise, and set the size to 0.5x.",rotate,False,True,110,1.255262969126037e-14,205.0,110.0,0.5,True,0.0,explicit,
+95,"Push it down 205 px, spin it 110° anticlockwise, and set the size to 0.5x.",scale,False,True,0.5,1.255262969126037e-14,205.0,110.0,0.5,True,0.0,explicit,
+96,"Move it 280 pixels right, rotate 160° clockwise, and change its scale to 2.",translate,False,True,280,280.0,0.0,-160.0,1.7507348014614201,True,0.0,explicit,
+96,"Move it 280 pixels right, rotate 160° clockwise, and change its scale to 2.",rotate,False,True,160,280.0,0.0,-160.0,1.7507348014614201,True,0.0,explicit,
+96,"Move it 280 pixels right, rotate 160° clockwise, and change its scale to 2.",scale,False,True,2,280.0,0.0,-160.0,1.7507348014614201,True,0.1331115942028286,explicit,
+97,Nudge it up right and give it a slight anticlockwise turn; make it a little smaller.,translate,False,True,large,61.781329677628165,-61.781329677628165,13.603065056947424,0.9939368890779356,True,,vague,0.0
+97,Nudge it up right and give it a slight anticlockwise turn; make it a little smaller.,rotate,False,True,small,61.781329677628165,-61.781329677628165,13.603065056947424,0.9939368890779356,True,,vague,0.0
+97,Nudge it up right and give it a slight anticlockwise turn; make it a little smaller.,scale,False,True,medium,61.781329677628165,-61.781329677628165,13.603065056947424,0.9939368890779356,True,,vague,0.0
+98,"Shift the picture a bit down right, turn it gently clockwise, and shrink it slightly.",translate,False,True,small,3.14364568795671e-15,51.339630171661554,-13.079207127292,0.8313637883365306,False,,vague,1.0
+98,"Shift the picture a bit down right, turn it gently clockwise, and shrink it slightly.",rotate,False,True,medium,3.14364568795671e-15,51.339630171661554,-13.079207127292,0.8313637883365306,True,,vague,1.0
+98,"Shift the picture a bit down right, turn it gently clockwise, and shrink it slightly.",scale,False,True,large,3.14364568795671e-15,51.339630171661554,-13.079207127292,0.8313637883365306,True,,vague,0.0
+99,"Move everything down a little, add a mild anticlockwise tilt, and change the size a touch.",translate,False,True,medium,3.6056447423085934e-15,58.88464730923207,22.124278539438876,1.0,True,,vague,1.0
+99,"Move everything down a little, add a mild anticlockwise tilt, and change the size a touch.",rotate,False,True,large,3.6056447423085934e-15,58.88464730923207,22.124278539438876,1.0,True,,vague,1.0
+99,"Move everything down a little, add a mild anticlockwise tilt, and change the size a touch.",scale,False,False,small,3.6056447423085934e-15,58.88464730923207,22.124278539438876,1.0,False,,vague,0.0
+100,"Slide it right gently, rotate it a bit clockwise, then make it noticeably smaller.",translate,False,True,large,26.531823560962845,0.0,-6.974820933019567,1.0183942373229953,True,,vague,0.0
+100,"Slide it right gently, rotate it a bit clockwise, then make it noticeably smaller.",rotate,False,True,small,26.531823560962845,0.0,-6.974820933019567,1.0183942373229953,True,,vague,1.0
+100,"Slide it right gently, rotate it a bit clockwise, then make it noticeably smaller.",scale,False,True,medium,26.531823560962845,0.0,-6.974820933019567,1.0183942373229953,False,,vague,0.0
+101,"Give the image a up right nudge, a soft anticlockwise turn, and a small size boost.",translate,False,True,small,6.503977633836333e-15,-106.21801548601043,21.94071383434046,1.4566125862096615,False,,vague,0.0
+101,"Give the image a up right nudge, a soft anticlockwise turn, and a small size boost.",rotate,False,True,medium,6.503977633836333e-15,-106.21801548601043,21.94071383434046,1.4566125862096615,True,,vague,0.0
+101,"Give the image a up right nudge, a soft anticlockwise turn, and a small size boost.",scale,False,True,large,6.503977633836333e-15,-106.21801548601043,21.94071383434046,1.4566125862096615,False,,vague,0.0

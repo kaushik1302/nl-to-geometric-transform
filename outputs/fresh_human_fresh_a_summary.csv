@@ -1,0 +1,4 @@
+kind,n,detected,direction_ok,explicit_n,explicit_median_error,vague_n,level_hit
+translate,60,1.0,0.6833333333333333,35,0.0,25,0.36
+rotate,50,1.0,1.0,25,0.0,25,0.48
+scale,50,0.94,0.78,25,0.0,25,0.16

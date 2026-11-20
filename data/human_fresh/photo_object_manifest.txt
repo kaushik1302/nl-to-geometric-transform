@@ -1,0 +1,10 @@
+p01.jpg: laptop, mug, plant
+p02.jpg: kettle, cutting board, bowl
+p03.jpg: bicycle, car, tree
+p04.jpg: dog, bench, frisbee
+p05.jpg: armchair, floor lamp, book
+p06.jpg: flower pot, watering can, folding chair
+p07.jpg: croissant, glass, vase
+p08.jpg: train, bench, platform
+p09.jpg: cat, plant, window
+p10.jpg: umbrella, chair, ocean

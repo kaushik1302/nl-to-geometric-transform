@@ -1,0 +1,101 @@
+﻿instruction,move_direction,move_amount,rotate_direction,rotate_amount,resize_direction,resize_amount
+Shift the whole picture 260 px down and to the right.,down-right,260,,,,
+Move it 18 pixels right.,right,18,,,,
+Can you nudge the image up left by 290 pixels?,up-left,290,,,,
+Slide the picture 120 px toward the lower right.,down-right,120,,,,
+"Push the image up, about 95 pixels.",up,95,,,,
+Shift the whole picture 48 px upward.,up,48,,,,
+Move it 18 pixels up left.,up-left,18,,,,
+Can you nudge the image down right by 260 pixels?,down-right,260,,,,
+Slide the picture 95 px upwardper right.,up-right,95,,,,
+"Push the image right, about 18 pixels.",right,18,,,,
+Give the picture a small nudge right.,right,small,,,,
+Shift it up left slightly.,up-left,small,,,,
+The whole image needs to move a bit upwardper right.,up-right,small,,,,
+Slide everything down left just a touch.,down-left,small,,,,
+Move the picture over down and to the right just quite a bit.,down-right,medium,,,,
+Give the picture a small nudge up.,up,medium,,,,
+Shift it down a tiny amount.,down,medium,,,,
+The whole image needs to move noticeably toward the left.,left,medium,,,,
+Slide everything right a good bit.,right,large,,,,
+Move the picture over up and to the left just gently.,up-left,large,,,,
+Turn the whole image 12 degrees clockwise.,,,clockwise,12,,
+Give the picture a 25-degree anticlockwise turn.,,,anticlockwise,25,,
+Rotate everything by 38° clockwise.,,,clockwise,38,,
+Tip the image anticlockwise through 55 degrees.,,,anticlockwise,55,,
+Spin the picture 70 degrees clockwise.,,,clockwise,70,,
+Turn the whole image 88 degrees anticlockwise.,,,anticlockwise,88,,
+Give the picture a 105-degree clockwise turn.,,,clockwise,105,,
+Rotate everything by 132° anticlockwise.,,,anticlockwise,132,,
+Tip the image clockwise through 160 degrees.,,,clockwise,160,,
+Spin the picture 178 degrees anticlockwise.,,,anticlockwise,178,,
+Give the picture a gentle clockwise twist.,,,clockwise,small,,
+Turn the whole thing a little anticlockwise.,,,anticlockwise,small,,
+The image could use a slight clockwise tilt.,,,clockwise,medium,,
+Rotate it just a bit anticlockwise.,,,anticlockwise,small,,
+Add a small clockwise turn to the picture.,,,clockwise,large,,
+Make the whole picture 1.25 times bigger.,,,,,bigger,1.25
+Scale the image to 75% of its size.,,,,,smaller,0.75
+Make the whole picture twice as large.,,,,,bigger,2
+Scale the image to half its size.,,,,,smaller,0.5
+Make the whole picture by 35%.,,,,,bigger,35%
+Scale the image by 25%.,,,,,smaller,25%
+Make the whole picture three times the size.,,,,,bigger,3
+Scale the image to 0.8x.,,,,,smaller,0.8
+Make the whole picture by 150%.,,,,,bigger,150%
+Scale the image to 60%.,,,,,smaller,60%
+Make the image a little larger.,,,,,bigger,small
+Shrink the whole picture just a touch.,,,,,smaller,small
+Give everything a more noticeable size boost.,,,,,bigger,medium
+Scale the image down quite a bit.,,,,,smaller,large
+Blow the picture up quite a lot.,,,,,bigger,large
+"Move it down by 24 px, then turn it 15° clockwise.",down,24,clockwise,15,,
+Shift the image 65 pixels up left and give it a 32-degree anticlockwise turn.,up-left,65,anticlockwise,32,,
+Slide everything down right 110 px; rotate the picture 48 degrees clockwise.,down-right,110,clockwise,48,,
+Push the whole image 175 px toward left and tilt it anticlockwise by 75°.,left,175,anticlockwise,75,,
+Move it 245 px up right and spin it 115 degrees clockwise.,up-right,245,clockwise,115,,
+Nudge it up and give it a slight anticlockwise turn.,up,large,anticlockwise,large,,
+Shift the picture a little right; twist it gently clockwise.,right,small,clockwise,small,,
+Move everything down left a bit and rotate it anticlockwise a touch.,down-left,medium,anticlockwise,medium,,
+"Slide it down slightly, then turn it clockwise a little.",down,large,clockwise,large,,
+Give the image a up left nudge and a mild anticlockwise tilt.,up-left,small,anticlockwise,small,,
+Shift it 24 px down right and add a tiny clockwise twist.,down-right,24,clockwise,small,,
+"Move the image left by 65 pixels, with a slight anticlockwise tilt.",left,65,anticlockwise,small,,
+Slide everything 110 px toward the upper right and turn it a bit clockwise.,up-right,110,clockwise,small,,
+"Push it up 175 px, then give it a gentle anticlockwise turn.",up,175,anticlockwise,small,,
+Move the picture 245 pixels right and rotate it slightly clockwise.,right,245,clockwise,small,,
+Move the picture 30 px left and scale it 1.2x.,left,30,,,bigger,1.2
+"Shift everything down right by 75 pixels, then make it 0.7 times its size.",down-right,75,,,smaller,0.7
+Slide it 125 px toward the upper left and resize it to 1.5x.,up-left,125,,,bigger,1.5
+Push the image down 190 px and change its size by a factor of 0.5.,down,190,,,smaller,0.5
+Move it 275 pixels down left and set the scale to 2x.,down-left,275,,,bigger,2
+Nudge the whole picture right and make it a little smaller.,right,large,,,smaller,small
+Shift it slightly up; give it a modest size change.,up,small,,,bigger,medium
+Move everything up right a bit and shrink it a touch.,up-right,medium,,,smaller,large
+Slide it left gently and make the picture noticeably bigger.,left,large,,,bigger,small
+"Give the image a down right nudge, then scale it smaller quite a bit.",down-right,small,,,smaller,medium
+Move it 30 px up left and make it a little bigger.,up-left,30,,,bigger,small
+"Shift the image down by 75 pixels, then slightly smaller it.",down,75,,,smaller,small
+Slide it 125 px toward the lower left and give it a gentle size change.,down-left,125,,,bigger,small
+Push the picture right 190 px and make it a bit smaller.,right,190,,,smaller,small
+Move everything 275 pixels up and scale it just a touch bigger.,up,275,,,bigger,small
+Turn the picture 20 degrees clockwise and scale it to 1.25x.,,,clockwise,20,bigger,1.25
+"Rotate the whole image by 45° anticlockwise, then make it 0.8 times the size.",,,anticlockwise,45,smaller,0.8
+Give it a 80-degree clockwise turn and resize it by a factor of 2.,,,clockwise,80,bigger,2
+Spin the image 125 degrees anticlockwise and set its scale to 0.5x.,,,anticlockwise,125,smaller,0.5
+Rotate everything 170° clockwise and change the size to 1.5x.,,,clockwise,170,bigger,1.5
+Give the picture a slight anticlockwise turn and make it a little smaller.,,,anticlockwise,small,smaller,small
+Rotate it gently clockwise and enlarge it a touch.,,,clockwise,medium,bigger,medium
+"Add a mild anticlockwise tilt, then change the image size just a bit.",,,anticlockwise,large,smaller,large
+Turn everything a little clockwise and make the whole thing noticeably bigger.,,,clockwise,small,bigger,small
+Give it a soft anticlockwise twist and scale it smaller slightly.,,,anticlockwise,medium,smaller,medium
+"Shift it 45 px right, rotate 18° clockwise, and scale it to 1.2x.",right,45,clockwise,18,bigger,1.2
+"Move the image up right by 90 pixels, turn it 42 degrees anticlockwise, then resize to 0.75x.",up-right,90,anticlockwise,42,smaller,0.75
+"Slide everything 145 px toward the lower right, give it a 75-degree clockwise turn, and make it 1.5x.",down-right,145,clockwise,75,bigger,1.5
+"Push it down 205 px, spin it 110° anticlockwise, and set the size to 0.5x.",down,205,anticlockwise,110,smaller,0.5
+"Move it 280 pixels right, rotate 160° clockwise, and change its scale to 2.",right,280,clockwise,160,bigger,2
+Nudge it up right and give it a slight anticlockwise turn; make it a little smaller.,up-right,large,anticlockwise,small,smaller,medium
+"Shift the picture a bit down right, turn it gently clockwise, and shrink it slightly.",down-right,small,clockwise,medium,smaller,large
+"Move everything down a little, add a mild anticlockwise tilt, and change the size a touch.",down,medium,anticlockwise,large,smaller,small
+"Slide it right gently, rotate it a bit clockwise, then make it noticeably smaller.",right,large,clockwise,small,smaller,medium
+"Give the image a up right nudge, a soft anticlockwise turn, and a small size boost.",up-right,small,anticlockwise,medium,smaller,large
