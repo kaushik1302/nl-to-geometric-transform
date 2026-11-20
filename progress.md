@@ -331,3 +331,12 @@
 ## 2026-11-20 · Poster figure: demo examples with predicted parameters
 - tools/fig_demo.py runs six instructions through pipeline.run and draws input, predicted parameters and edited result per row: two whole-image edits (37 degrees turn; shrink and turn on a non-square photo), a named object moved by pixels, rotate and enlarge with clamp warnings, touch, beside
 - Only the test card and dev photos are used; the fresh test set is untouched
+
+
+## 2026-11-21 · Vague moves snapped to a main direction; fresh-set scorer
+- fix_numbers snaps every move to the 4 main directions (8 if the clause names a diagonal); a vague move keeps the model's length
+- Found on a made-up dev sentence ("slide the book a little to the left" drifted 28 degrees down); fresh set not used
+- hand+minilm: human-set move direction (multi-edit) 0.794 -> 0.912; corner error test 28.4 -> 28.0, unseen 24.4 -> 24.1, GeoBench unchanged
+- pipeline.run returns the final edit (params) and the edited object's name for scoring
+- eval_fresh.py scores Part A (whole image, 512 px) and Part B (object edits on the photos, clamped rows separate)
+- Rules fixed before scoring: "to n%" = n/100, "by n%" = 1 +/- n/100 with the label's direction; an edit counts as detected when it is non-zero in the final output

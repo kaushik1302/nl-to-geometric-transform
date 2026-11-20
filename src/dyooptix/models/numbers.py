@@ -58,8 +58,9 @@ def fix_numbers(clause, pred, present):
             frac = float(PCT.search(text).group(2)) / 100
         elif not (r or sc) and BARE.search(text):
             frac = float(BARE.search(text).group(1)) / WIDTH
-        if frac is not None and np.hypot(*out[:2]) > 0:
-            out[:2] = frac * snap(out[0], out[1], text)
+        length = np.hypot(*out[:2])
+        if length > 0:                                   # exact number: its size; vague: the model's size
+            out[:2] = (frac if frac is not None else length) * snap(out[0], out[1], text)
 
     if sc:
         f = None

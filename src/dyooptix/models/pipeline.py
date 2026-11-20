@@ -125,7 +125,8 @@ def _whole(image, sentence, clauses, rep, note):
               f"Image size:  {w} × {h}",
               "Affine matrix (2×3):",
               np.array2string(M, precision=2, suppress_small=True)]
-    return {"image": warp(image, target, cv2.INTER_LINEAR), "report": "\n".join(lines), "marks": [], "mode": "whole"}
+    return {"image": warp(image, target, cv2.INTER_LINEAR), "report": "\n".join(lines), "marks": [], "mode": "whole",
+            "params": {"tx": p["tx"] * w, "ty": p["ty"] * w, "deg": angle, "s": float(np.exp(p["log_s"])), "warnings": []}}
 
 
 def _object(image, sentence, clauses, rels, texts, found, label, rep, note, marks):
@@ -149,4 +150,5 @@ def _object(image, sentence, clauses, rels, texts, found, label, rep, note, mark
                   f"({info['centre'][0]:.0f}, {info['centre'][1]:.0f}):",
                   np.array2string(info["matrix"], precision=2, suppress_small=True)]
     lines += list(info["warnings"])
-    return {"image": edited, "report": "\n".join(lines), "marks": marks, "mode": "object"}
+    return {"image": edited, "report": "\n".join(lines), "marks": marks, "mode": "object", "object": label,
+            "params": {"tx": info["tx"], "ty": info["ty"], "deg": info["deg"], "s": info["s"], "warnings": info["warnings"]}}
