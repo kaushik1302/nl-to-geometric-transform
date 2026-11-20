@@ -350,3 +350,9 @@
 - Main failure causes: diagonal moves collapse onto one axis, "upward/upper" read as down, exact factor inverted when the model guesses shrink, no size word in the sentence, idioms or a missed scale clause, clamping changing the move.
 - Caveats: LLM-written set is optimistic; rules (snap, avoid, main-object thresholds) were added after seeing dev failures.
 - Files: data/human_fresh/, outputs/fresh_human_fresh_*.csv, src/dyooptix/models/eval_fresh.py.
+
+## 2026-11-21 · Fresh-set figures
+
+- Poster charts: direction right (Part A vs Part B not clamped vs clamped), vague-word level right (clamped left out, 1-2 sentences), failure causes (counts from a hand grouping of the 41 wrong sentences).
+- Report table: all numbers per edit type, Part B split into clamped and not clamped, the 2 absent objects shown as refusals.
+- Files: tools/fig_fresh_charts.py, tools/fig_fresh_tables.py, outputs/fig_fresh_*.png.
