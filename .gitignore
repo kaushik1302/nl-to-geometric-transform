@@ -1,20 +1,22 @@
-﻿.venv/
+.venv/
 __pycache__/
 *.pyc
-/outputs/*
-!/outputs/.gitkeep
-*.npy
+*.egg-info/
 .ipynb_checkpoints/
 .DS_Store
-*.egg-info/
+.pytest_cache/
+.gradio/
 /refs/
-/refs/
+/scratch/
+
+# generated outputs: keep only the trained models and poster figures
+/outputs/*
+!/outputs/.gitkeep
+!/outputs/mlp_*.pt
+!/outputs/fig_*.png
+
+# data: generated or downloaded, except the human-written test sets
 /data/*
 !/data/human/
-/.gradio/
-!/outputs/mlp_*.ptmask*.png
-lama_out.png
-telea_out.png
-mask*.png
-lama_out.png
-telea_out.png
+!/data/human_fresh/
+*.npy

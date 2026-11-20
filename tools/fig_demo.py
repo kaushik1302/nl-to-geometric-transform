@@ -14,11 +14,11 @@ from app import sample_image
 from dyooptix.models.pipeline import run
 
 EXAMPLES = [                                                    # (photo, instruction); None = the test card
-    ("dev_pics2/mugbottle.jpeg", "rotate the image by 37 degrees clockwise"),
-    ("gsam_test/cup.jpg", "move the cup 300 px to the right"),
-    ("dev_pics2/table4.jpeg", "shrink the image to 0.7x and turn it slightly counter-clockwise"),
-    ("dev_pics2/teapot.jpeg", "rotate it 25 degrees clockwise and make it twice as big"),
-    ("dev_pics2/table4.jpeg", "move the mug until it touches the bottle"),
+    ("samples/mugbottle.jpeg", "rotate the image by 37 degrees clockwise"),
+    ("samples/cup.jpg", "move the cup 300 px to the right"),
+    ("samples/table4.jpeg", "shrink the image to 0.7x and turn it slightly counter-clockwise"),
+    ("samples/teapot.jpeg", "rotate it 25 degrees clockwise and make it twice as big"),
+    ("samples/table4.jpeg", "move the mug until it touches the bottle"),
     (None, "move the circle beside the square"),
 ]
 SHOWN = ("Translation", "Rotation", "Scale", "⚠")               # the report lines worth showing

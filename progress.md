@@ -356,3 +356,10 @@
 - Poster charts: direction right (Part A vs Part B not clamped vs clamped), vague-word level right (clamped left out, 1-2 sentences), failure causes (counts from a hand grouping of the 41 wrong sentences).
 - Report table: all numbers per edit type, Part B split into clamped and not clamped, the 2 absent objects shown as refusals.
 - Files: tools/fig_fresh_charts.py, tools/fig_fresh_tables.py, outputs/fig_fresh_*.png.
+
+## 2026-11-21 · Project folder tidied
+
+- Removed the duplicate model cache (gsam_test/), old debug images and the empty src/dyooptix/eval/ package.
+- Dev photos moved to samples/ (inputs for tools/fig_demo.py); smoke scripts moved to tools/smoke/.
+- .gitignore rewritten: figures, model weights and data/human_fresh/ are now tracked without -f.
+- 74 tests pass.
