@@ -291,3 +291,9 @@
 - New `models/eval_scene.py`: shape test set with true masks or Grounded-SAM masks; scores the clamped translation against the exact expected one (within 3 px).
 - Found on the shape test: "slide the circle left" gave a weak direction (155.6°) that the 8-way snap turned into down-left. New `numbers.snap(tx, ty, text)`: diagonal only if the clause names one (a horizontal and a vertical word, or "diagonal"), else nearest of the 4 main directions; used in `fix_numbers` and `relation_shift`. Rule added after seeing this failure; the fresh LLM-written set is untouched.
 - Results: shapes with true masks 56/56 within 3 px (was 54/56). Human set (development): translate direction hand+minilm multi-edit 0.765 → 0.794, minilm single-edit 0.526 → 0.684; explicit amounts still exact; nothing worse.
+
+
+## 2026-11-20 · Two named objects must be two different things
+- Shape test with Grounded-SAM masks exposed: for "square", DINO-tiny returned the circle's box (score 0.65–0.68 vs 0.91 for "circle") in 3 of 56 images, so mover and target were the same mask (two refusals, one wrong side).
+- `grounding.find_object(image, name, avoid=box)`: a candidate box overlapping `avoid` with IoU ≥ 0.5 is skipped; the best remaining box is used, else "couldn't find X apart from the other object". The target is looked up avoiding the mover's box. `box_iou` + test. Rule added after seeing this failure; the fresh LLM-written set is untouched.
+- Shape test (56 images, sentences with no number, expected moves from exact geometry), within 3 px of the exact translation: true masks 56/56 (median 0–0.24 px), Grounded-SAM masks 56/56 (median 1.0–1.4 px; was 53/56 before this rule).

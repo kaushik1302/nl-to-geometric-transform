@@ -26,10 +26,12 @@ def text_preds(texts, model, mean, std):
     return [fix_numbers(t, p, q.astype(bool)) for t, p, q in zip(texts, pred, present)]
 
 
-def mask(row_id, image, word, source):
+def mask(row_id, image, word, source, avoid=None):
+    """(mask, box). avoid: the mover's box, so the target is looked for among the other objects."""
     if source == "true":
-        return cv2.imread(f"{SHAPES}/masks/{row_id}_{word}.png", cv2.IMREAD_GRAYSCALE)
-    return find_object(image, word)["mask"]
+        return cv2.imread(f"{SHAPES}/masks/{row_id}_{word}.png", cv2.IMREAD_GRAYSCALE), None
+    found = find_object(image, word, avoid)
+    return found["mask"], found["box"]
 
 
 def run(source, model, mean, std):
@@ -41,8 +43,8 @@ def run(source, model, mean, std):
         rel = next(x for x in rels if x)
         start = time.time()
         try:
-            mover_mask = mask(r.id, image, mover, source)
-            target_mask = mask(r.id, image, rel["target"], source) if rel["target"] else None
+            mover_mask, mover_box = mask(r.id, image, mover, source)
+            target_mask = mask(r.id, image, rel["target"], source, mover_box)[0] if rel["target"] else None
             edit = scene_edit(clauses, rels, text_preds(texts, model, mean, std), mover_mask, target_mask)
             ys, xs = np.nonzero(mover_mask > 127)
             deg = np.degrees(np.arctan2(edit[3], edit[2]))

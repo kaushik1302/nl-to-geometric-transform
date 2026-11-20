@@ -13,8 +13,9 @@ DINO_ID = "IDEA-Research/grounding-dino-tiny"
 SAM_ID = "facebook/sam-vit-base"
 MIN_SCORE = 0.30          # below this, DINO is not sure the object is in the photo
 FLOOR = 0.05              # lowest score kept, only so the error message can report the best rejected match
+OVERLAP = 0.5             # a box overlapping the other named object this much (IoU) is that object, not this one
 
-_found = {}               # (photo fingerprint, object word) -> result of _ground
+_found = {}               # (photo fingerprint, object word, avoided box) -> result of _ground
 
 
 class ObjectNotFound(Exception):
@@ -31,17 +32,27 @@ def load():
             SamModel.from_pretrained(SAM_ID, cache_dir=CACHE))
 
 
-def find_object(image, name):
+def box_iou(a, b):
+    """Overlap of two boxes [x0, y0, x1, y1]: shared area / combined area (0 = apart, 1 = identical)."""
+    w = max(0.0, min(a[2], b[2]) - max(a[0], b[0]))
+    h = max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+    shared = w * h
+    area = lambda r: (r[2] - r[0]) * (r[3] - r[1])
+    return shared / (area(a) + area(b) - shared) if shared else 0.0
+
+
+def find_object(image, name, avoid=None):
     """image: RGB uint8 array (H, W, 3). Returns {"mask": 0/255 uint8 (H, W), "box": [x0, y0, x1, y1], "score": float}.
+    avoid: box of another object already found; a box overlapping it is not accepted for this word.
     Raises ObjectNotFound when the word is not in the photo."""
     name = name.lower().strip()
-    key = (hashlib.md5(image.tobytes()).hexdigest(), name)
+    key = (hashlib.md5(image.tobytes()).hexdigest(), name, None if avoid is None else tuple(round(v) for v in avoid))
     if key not in _found:
-        _found[key] = _ground(image, name)
+        _found[key] = _ground(image, name, avoid)
     return _found[key]
 
 
-def _ground(image, name):
+def _ground(image, name, avoid=None):
     import torch
     dino_proc, dino, sam_proc, sam = load()
     photo = Image.fromarray(image)
@@ -54,13 +65,15 @@ def _ground(image, name):
         out = dino(**inputs)
     found = dino_proc.post_process_grounded_object_detection(
         out, inputs.input_ids, threshold=FLOOR, text_threshold=0.25, target_sizes=[(H, W)])[0]
-    scores = found["scores"]
-    if len(scores) == 0 or scores.max() < MIN_SCORE:
-        best = float(scores.max()) if len(scores) else 0.0
-        raise ObjectNotFound(f"Couldn't find '{name}' in the photo (best match {best:.2f}, needs {MIN_SCORE:.2f}). "
+    scores, boxes = found["scores"].tolist(), found["boxes"].tolist()
+    allowed = [i for i in range(len(scores)) if avoid is None or box_iou(boxes[i], avoid) < OVERLAP]
+    i = max(allowed, key=lambda k: scores[k]) if allowed else None
+    if i is None or scores[i] < MIN_SCORE:
+        best = scores[i] if i is not None else 0.0
+        where = "in the photo" if avoid is None else "apart from the other object"
+        raise ObjectNotFound(f"Couldn't find '{name}' {where} (best match {best:.2f}, needs {MIN_SCORE:.2f}). "
                              "Try another word in the Object box, or leave the object out to edit the whole image.")
-    i = scores.argmax()
-    box = found["boxes"][i].tolist()
+    box = boxes[i]
 
     # 2) box -> mask; SAM proposes three masks, keep the one it scores highest
     inputs = sam_proc(photo, input_boxes=[[box]], return_tensors="pt")
@@ -69,7 +82,7 @@ def _ground(image, name):
     masks = sam_proc.image_processor.post_process_masks(
         out.pred_masks, inputs["original_sizes"], inputs["reshaped_input_sizes"])[0]
     mask = masks[0, out.iou_scores[0, 0].argmax()].numpy().astype(np.uint8) * 255
-    return {"mask": mask, "box": box, "score": float(scores[i])}
+    return {"mask": mask, "box": box, "score": scores[i]}
 
 
 def outline(mask):
