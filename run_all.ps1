@@ -10,7 +10,9 @@ $steps = @(
     "dyooptix.models.breakdown",      # per-group errors + noise-floor oracle
     "dyooptix.models.showcase",       # GeoBench IoU + qualitative grid
     "dyooptix.models.eval_human",     # human-written test set
-    "dyooptix.models.eval_split",     # whole sentence vs clause splitting
+    "dyooptix.models.eval_split",     # whole sentence vs clause splitting, + exact numbers
+    "dyooptix.data.shapes",           # shape test set for scene-derived edits (56 images)
+    "dyooptix.models.eval_scene",     # touch / beside / edge vs exact geometry (true and Grounded-SAM masks)
     "dyooptix.models.make_figures"    # report figures
 )
 

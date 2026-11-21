@@ -85,4 +85,4 @@ demo = gr.Interface(
 )
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(share="--share" in sys.argv)   # python app.py --share: temporary public link

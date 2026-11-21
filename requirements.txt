@@ -95,3 +95,4 @@ wcwidth==0.8.4
 xxhash==4.0.1
 yarl==1.25.1
 simple-lama-inpainting==0.1.2
+simple-lama-inpainting==0.1.2

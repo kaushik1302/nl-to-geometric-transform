@@ -39,7 +39,7 @@ body_b = (rows(b[~b["clamped"] & ~b["failed"]], " (no clamp)") + rows(b[b["clamp
 fig, (top, bottom) = plt.subplots(2, 1, figsize=(10, 4.6), gridspec_kw={"height_ratios": [1, 1.7]})
 table(top, f"Part A: {len(sa)} whole-image sentences   (all edit flags right: {sa['presence_ok'].mean():.0%})",
       rows(a))
-table(bottom, f"Part B: {len(sb)} object sentences on 10 photos   (right object: "
+table(bottom, f"Part B: {len(sb)} object sentences on 10 photos\n(right object: "
       f"{present['object_ok'].sum()}/{len(present)}, absent objects refused: {int(sb['failed'].sum())}/2, "
       f"all edit flags right: {present['presence_ok'].mean():.0%})", body_b)
 fig.text(0.01, 0.01, "Clamped = the edit was reduced to keep the object inside the photo. "

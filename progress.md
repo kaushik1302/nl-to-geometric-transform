@@ -363,3 +363,10 @@
 - Dev photos moved to samples/ (inputs for tools/fig_demo.py); smoke scripts moved to tools/smoke/.
 - .gitignore rewritten: figures, model weights and data/human_fresh/ are now tracked without -f.
 - 74 tests pass.
+## 2026-11-21 · Loose ends after the guide review
+- README rewritten for the finished system: object editing, scene-derived edits, Object box, test sets, novelty results, limitations, `--share`.
+- app.py: `python app.py --share` now gives a public link (it never read the flag before).
+- run_all.ps1: shape test set and scene evaluation added after eval_split; the fresh-set scorer stays manual (it overwrites the one-time record).
+- breakdown.py: SEEN_VERBS includes the neutral verbs scale and resize, which are training verbs.
+- fig_fresh_tables.py: Part B title on two lines (it was cut off at the right edge).
+- requirements.txt: simple-lama-inpainting added (it was imported by geom/inpaint.py but missing).

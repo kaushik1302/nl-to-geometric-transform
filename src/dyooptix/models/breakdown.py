@@ -10,7 +10,8 @@ from dyooptix.models.metrics import evaluate
 from dyooptix.models.mlp import REPS, GatedMLP, load_features, predict, standardise
 
 SPLITS = ["test", "test_unseen_templates", "geobench"]
-SEEN_VERBS = vocab.TRANSLATE_VERBS + vocab.ROTATE_VERBS + vocab.SCALE_UP_VERBS + vocab.SCALE_DOWN_VERBS
+SEEN_VERBS = (vocab.TRANSLATE_VERBS + vocab.ROTATE_VERBS + vocab.SCALE_UP_VERBS + vocab.SCALE_DOWN_VERBS
+              + vocab.SCALE_NEUTRAL_VERBS)
 
 
 def load_rows(split):
